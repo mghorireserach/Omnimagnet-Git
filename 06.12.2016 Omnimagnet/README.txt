@@ -1,0 +1,1 @@
+First Iteration of Omnimagnet Simulation
