@@ -32,7 +32,7 @@ Task = 'Running Find Required Current'
 
 %% inverseMagneticField 
 % Enough Inputs EXCEPTION
-if nargin == 5
+if nargin == 4
     % Mapping of Magnetic Field to Current Based on Physical 
     % Attributes of Solenoid
     M = eye(3);

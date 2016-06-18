@@ -51,13 +51,18 @@ Task = 'Running Main Function'
 if nargin == 0||nargin == 1||nargin == 6||nargin == 8||nargin == 10
     %% Add Paths 
     % MATLAB add path function
-    addpath('AngleFindi','CNTRL','MATHFUNC','PLOT','RotFunc','SHAPES');
-
-
+    addpath('MATH','CNTRL','PLOT','SHAPES');
+    
+    %% Init Graph
+    if nargin ==10
+        plot_ball(ballsize);
+    else
+        plot_ball(1);
+    end
     %% Following Shape
     % 0 Param "Blind"
     if nargin ==0 
-        a = ciel(2*rand);
+        a = ceil(2*rand);
         if a==1
         [currX, currY, currZ] = rollBallInSquare();
         else
@@ -104,7 +109,7 @@ if nargin == 0||nargin == 1||nargin == 6||nargin == 8||nargin == 10
 
 
     %% Play it Back
-    playback([x0; y0; 0],currX,currY,currZ,T,dt,ballsize,speed);
+    playback(currX,currY,currZ,[x0; y0; 0],T,dt,speed,ballsize);
 
 else
     ERROR = 'Not Enough Input Arguments'

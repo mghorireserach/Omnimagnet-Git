@@ -43,7 +43,7 @@ if nargin == 7
     % Decompose wRb into phi & psi components
     [phi, psi] = findPhiPsi(wRb);
     % Finding required current for phi and psi orientation
-    [currX, currY, currZ] = inverseMagneticField(p1(1), p1(2), phi, psi)
+    [currX, currY, currZ] = inverseMagneticField(p1(1), p1(2), phi, psi);
     currx = currX;
     curry = currY;
     currz = currZ;

@@ -17,7 +17,7 @@
 %               time step(dt)
 %}
 
-function  playback(currx,curry,currz,p0, T,dt, ballsize,speed)
+function  playback(currx,curry,currz,p0, T,dt, speed, ballsize)
 %Print Task Name
 Task = 'Running playback'
 %---------------------
