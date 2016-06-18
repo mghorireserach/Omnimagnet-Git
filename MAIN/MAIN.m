@@ -1,4 +1,4 @@
-%% This is the Main Function that runs all other functions 
+%% This is the Main Function that Runs all other functions for the Omnimagnet Simulation
 % Author: Mohamed Ghori
 % Reference Material: 
 % A. J. Petruska, J. B. Brink, and J. J. Abbott, "First Demonstration of a Modular and Reconfigurable Magnetic-Manipulation System," IEEE Int. Conf. Robotics and Automation, 2015 (to appear). 
@@ -10,49 +10,105 @@
 % This is the main function where any comands can be written
 %}
 
-function MAIN( )
+function MAIN(type,x0,y0,phi,psi,ShapeSize,T,dt,speed,ballsize)
 %Print Task Name
 Task = 'Running Main Function'
 %---------------------
+% Main calls the path to follow and then plays back the path resulting
+% from the returned current matrix
+%
+%   MAIN() 
+%   "Returns a path of a random shape with a defining size of 1"
+%   
+%   MAIN(type) 
+%   "Returns a path of shape(1=Square)(2=Circle) with a 
+%    defining size of 1"
+%   
+%   MAIN(type,x0,y0,phi,psi,ShapeSize) 
+%   "Returns a path of shape(1=Square)(2=Circle) with
+%    an init position and orientation and over-all size of 'x0' 'y0' 'phi' 
+%    'psi' & 'ShapeSize' "
+%
+%   MAIN(type,x0,y0,phi,psi,ShapeSize,T,dt) 
+%   "Returns a path of shape(1=Square)(2=Circle) 
+%    with an init position and orientation and over-all size 
+%    of 'x0' 'y0' 'phi' 'psi' & 'ShapeSize' 
+%    with Time to completion and timestep 'T' & 'dt' "
+%
+%   MAIN(type,x0,y0,phi,psi,ShapeSize,T,dt,speed,ballsize) 
+%   "Returns a path of shape(1=Square)(2=Circle) 
+%    with an init position and orientation and over-all size 
+%    of 'x0' 'y0' 'phi' 'psi' & 'ShapeSize' 
+%    with Time to completion and timestep 'T' & 'dt' 
+%    with ball-size and video speed 'ballsize' 'speed'"
+%
+% EX___  
+%   MAIN(2,0,0,pi,pi,[10;10],10,0.1,1,1);
+%
 
-%% Add Paths 
-% MATLAB add path function
-addpath('AngleFindi','CNTRL','MAKEFUNK','MATHFUNC','PLOT','RotFunc','SHAPES');
+%% MAIN
+% Enough Inputs EXCEPTION
+if nargin == 0||nargin == 1||nargin == 6||nargin == 8||nargin == 10
+    %% Add Paths 
+    % MATLAB add path function
+    addpath('AngleFindi','CNTRL','MATHFUNC','PLOT','RotFunc','SHAPES');
 
-%% Ball Params
-% Ball Size
-ballsize = 1;
-% Initial Position
-x0 = 5;
-y0 = 0;
-% Init Roty(latitude)
-phi = 0;
-% Init Rotz(longitude)
-psi = 0;
 
-%% Video Params
-% Period
-T = 10
-% Time Step
-dt = 0.1;
-% Video Speedx
-speed = 15;
+    %% Following Shape
+    % 0 Param "Blind"
+    if nargin ==0 
+        a = ciel(2*rand);
+        if a==1
+        [currX, currY, currZ] = rollBallInSquare();
+        else
+        [currX, currY, currZ] = rollBallInCircle();
+        end
+    end
 
-%% Specific Params
-% Corner(square) 
-corner = [10;10];
-% Radius(circle)
-Radius = 5;
+    % 1 Param "Given Path Shape"
+    if nargin == 1
+        if type==1
+            [currX, currY, currZ] = rollBallInSquare();
+        else
+            [currX, currY, currZ] = rollBallInCircle();
+        end
+    end
 
-%% Initi Graphing Area with ball size of 1
-plot_ball(1);
+    % 6 Param "Given Path Shape, & Path Parameters"
+    if nargin ==6
+        if type==1
+            [currX, currY, currZ] = rollBallInSquare(x0,y0,phi,psi,ShapeSize);
+        else
+            [currX, currY, currZ] = rollBallInCircle(x0,y0,phi,psi,ShapeSize);
+        end
+    end
 
-%% Roll ball in square
-[currX, currY, currZ] = rollBallInSquare(x0,y0,phi,psi,corner,speed,ballsize,T,dt)
+    % 8 Param "Given Path Shape, Path Params, & Time Params"
+    if nargin == 8
+        if type==1
+            [currX, currY, currZ] = rollBallInSquare(x0,y0,phi,psi,ShapeSize,T,dt);
+        else
+            [currX, currY, currZ] = rollBallInCircle(x0,y0,phi,psi,ShapeSize,T,dt);
+        end
+    end
 
-%% Play it Back
-playback([x0; y0; 0],currX,currY,currZ,ballsize,speed,T/4,dt);
+    % 10 Param "Given Path Shape, Path Params, & Time Params, Video Params"
+    if nargin == 10
+        if type==1
+            [currX, currY, currZ] = rollBallInSquare(x0,y0,phi,psi,ShapeSize,T,dt,speed,ballsize);
+        else
+            [currX, currY, currZ] = rollBallInCircle(x0,y0,phi,psi,ShapeSize,T,dt,speed,ballsize);
+        end
+    end
 
+
+
+    %% Play it Back
+    playback([x0; y0; 0],currX,currY,currZ,T,dt,ballsize,speed);
+
+else
+    ERROR = 'Not Enough Input Arguments'
+end
 
 end
 
