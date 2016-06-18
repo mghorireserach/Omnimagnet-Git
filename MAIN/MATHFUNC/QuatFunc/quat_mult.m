@@ -1,3 +1,5 @@
+%% Quaternion Multiplication
+% Author: Mohamed Ghori
 function [quat] = quat_mult(a,b)
 %Print Task Name
 Task = 'Running Quat_Mult'

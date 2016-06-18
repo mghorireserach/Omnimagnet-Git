@@ -1,4 +1,5 @@
 %% FULL WINDED TITLE 
+% Author: Mohamed Ghori
 % INSTRUCTIONS
 %{
 % PUT INFO ON HOW TO USE FUNCTION

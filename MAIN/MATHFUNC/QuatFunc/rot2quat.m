@@ -1,3 +1,5 @@
+%% Rotation Matrix to Quaternion
+% Author: Mohamed Ghori
 function [quat] = rot2quat(R)
 %Print Task Name
 Task = 'Running Rot 2 Quat'

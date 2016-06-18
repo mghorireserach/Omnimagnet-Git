@@ -1,4 +1,5 @@
 %% Return Homogeneous Matrix at Position (pos) and Rotation (rpy)
+% Author: Mohamed Ghori
 % INSTRUCTIONS
 %{
 % Call with new Position Vector & Roation Vector
