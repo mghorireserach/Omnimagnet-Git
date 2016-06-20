@@ -5,30 +5,19 @@
 % A. J. Petruska, A. W. Mahoney, and J. J. Abbott, "Remote Manipulation with a Stationary Computer-Controlled Magnetic Dipole Source," IEEE Trans. Robotics, 30(5):1222-1227, 2014. 
 % A. J. Petruska and J. J. Abbott, "Omnimagnet: An Omnidirectional Electromagnet for Controlled Dipole-Field Generation," IEEE Trans. Magnetics, 50(7):8400810(1-10), 2014. 
 
-% INSTRUCTIONS
-%{
-% This function rolls a ball from p1 to p2 in a line
-% Call Using:
-%               Init-pos(p1) Init-pos(p2) Init-Orientation(wRb)
-%               NOTE: "Init position and Orientation"
-%               Period(T) Time-Step(dt) speed ballsize
-%               NOTE: "The total time to complete a line, the number
-%                      of steps to be displayed, speed of video, 
-%                      and ball ballsize "
-%}
-
-function [ currx, curry, currz, wRb ] = ballfwd(p1,p2,wRb,T,dt,speed,ballsize)
+function [ currx, curry, currz, wRb, Task ] = ballfwd(p1,p2,wRb,T,dt,speed,ballsize)
 %Print Task Name
-Task = 'Running Move Ball Fwd'
+Task = 'Running Move Ball Fwd';
 %---------------------
 %
 % ballfwd rotates the ball such that the y-axis is 90 degreees
 % perpendicular to the direction of piont2 from point1. second it rolls the
-% ball about the y-axis
+% ball about the y-axis until the ball reaches point2
 %
 %   [ currx, curry, currz, wRb ] = ballfwd(p1,p2,wRb,T,dt,speed,ballsize)
-%   "Returns the current coresponding the series of orientations the ball 
-%    must go through during its path from point1 to point2, Given the 
+%   "Returns the solenoid-current combination coresponding to 
+%    the series of orientations the magneticc-field must go through during 
+%    the ball's path from point1 to point2, Given the 
 %    initial point and final ponit, the initial orientation, the time to 
 %    complete path, the time step, the speed of the video, and the ball size:
 %    'p1' 'p2' 'wRb' 'T' 'dt' 'speed' 'ballsize' respectively
@@ -50,11 +39,11 @@ if nargin == 7
 
     %% Rotate Ball about world-z-axis
     % direction vector from p1 to p2 in world
-    direction = (p2-p1)/norm(p2-p1)
+    direction = (p2-p1)/norm(p2-p1);
     % unit vector of Magnetic-Field y-axis in world x-y-plane
     yaxis = [wRb(4:5)';0];
     % Angle Between Magnetic-Field y-axis and vector pointing to next position
-    theta = (pi/2 - anglediff(direction,yaxis))
+    theta = (pi/2 - anglediff(direction,yaxis));
     % For no rotation needed EXCEPTION
     if isnan(direction)
         theta = 0;
@@ -78,7 +67,7 @@ if nargin == 7
                 [phi, psi] = findPhiPsi(Rrot);
                 % Finding required current for phi and psi orientation of
                 % magnet-field
-                [currX, currY, currZ] = inverseMagneticField(p1(1), p1(2), phi, psi)
+                [currX, currY, currZ] = inverseMagneticField(p1(1), p1(2), phi, psi);
                 currx = [currx;currX];
                 curry = [curry;currY];
                 currz = [currz;currZ];
@@ -107,7 +96,7 @@ if nargin == 7
         % Number of steps in Translation
         transteps = floor(3*T/(4*dt));
         % Angular Velocity of rotation
-        omegay = gama*4/(3*T)
+        omegay = gama*4/(3*T);
         % Linear Velocity of ball
         vel = abs(omegay)*ballsize;
         % Rotation matrix for visualization

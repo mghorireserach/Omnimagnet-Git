@@ -16,7 +16,7 @@
 %                      of steps to be displayed"
 %}
 
-function [ currX, currY, currZ ] = rollBallInCircle(x0,y0,phi,psi,radius,T,dt,speed,ballsize)
+function [ currX, currY, currZ ,Task] = rollBallInCircle(x0,y0,phi,psi,radius,T,dt,speed,ballsize)
 %Print Task Name
 Task = 'Running Roll Ball in Circle';
 %---------------------
@@ -75,7 +75,7 @@ if nargin == 0||nargin == 5||nargin == 7||nargin == 9
     % Full Cirlce
     for Q = 0:del:2*pi
         % Pos current
-        pos2 = [radius*cos(Q);radius*sin(Q);0]
+        pos2 = [radius*cos(Q);radius*sin(Q);0];
         if isnan(pos1)==0
         % Use ballfwd Control
         [ currx, curry, currz, wRb] = ballfwd(pos1,pos2,wRb,dt,dt,speed,ballsize);
@@ -85,7 +85,7 @@ if nargin == 0||nargin == 5||nargin == 7||nargin == 9
         currZ = [currZ;currz];
         end
         % set Old pos
-        pos1 = pos2
+        pos1 = pos2;
     end
 else
     ERROR = 'Not Enough Input Arguments'

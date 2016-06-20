@@ -19,9 +19,9 @@
 %               
 %}
 
-function [ currX, currY, currZ ] = rollBallInSquare(x0,y0,phi,psi,corner,T,dt,speed,ballsize)
+function [ currX, currY, currZ, Task ] = rollBallInSquare(x0,y0,phi,psi,corner,T,dt,speed,ballsize)
 %Print Task Name
-Task = 'Running Roll Ball in Square'
+Task = 'Running Roll Ball in Square';
 %---------------------
 % rollBallInSquare Returns the square path to follow
 %
@@ -112,28 +112,28 @@ if nargin == 0||nargin == 5||nargin == 7||nargin == 9
 
     % First Leg
     % Use ballfwd Control
-    [ currx, curry, currz, wRb] = ballfwd(corners(1,:)',corners(2,:)',wRb,TL,dt,speed,ballsize)
+    [ currx, curry, currz, wRb] = ballfwd(corners(1,:)',corners(2,:)',wRb,TL,dt,speed,ballsize);
     % Set Required Current Vecotrs 
     currX = [currX;currx];
     currY = [currY;curry];
     currZ = [currZ;currz];
     %}
     % Second Leg
-    [ currx, curry, currz, wRb] = ballfwd(corners(2,:)',corners(3,:)',wRb,TW,dt,speed,ballsize)
+    [ currx, curry, currz, wRb] = ballfwd(corners(2,:)',corners(3,:)',wRb,TW,dt,speed,ballsize);
     % Set Required Current Vecotrs
     currX = [currX;currx];
     currY = [currY;curry];
     currZ = [currZ;currz];
 
     % Third Leg
-    [ currx, curry, currz, wRb] = ballfwd(corners(3,:)',corners(4,:)',wRb,TL,dt,speed,ballsize)
+    [ currx, curry, currz, wRb] = ballfwd(corners(3,:)',corners(4,:)',wRb,TL,dt,speed,ballsize);
     % Set Required Current Vecotrs
     currX = [currX;currx];
     currY = [currY;curry];
     currZ = [currZ;currz];
 
     % Fourth Leg
-    [ currx, curry, currz, wRb] = ballfwd(corners(4,:)',corners(1,:)',wRb,TW,dt,speed,ballsize)
+    [ currx, curry, currz, wRb] = ballfwd(corners(4,:)',corners(1,:)',wRb,TW,dt,speed,ballsize);
     % Set Required Current Vecotrs
     currX = [currX;currx];
     currY = [currY;curry];

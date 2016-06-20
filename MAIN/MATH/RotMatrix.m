@@ -4,9 +4,9 @@
 %{
 % Call using roll pitch yaw
 %}
-function [ R ] = RotMatrix(rpy)
+function [ R, Task ] = RotMatrix(rpy)
 %Print Task Name
-Task = 'Returning Make Rotation Matrix'
+Task = 'Returning Make Rotation Matrix';
 %---------------------
 
 % Setting Rotation to zero    

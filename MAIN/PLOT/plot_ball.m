@@ -11,9 +11,9 @@
 %                                       "the time step & the scale"
 %----------------------------------------------------------------------
 %}
-function  plot_ball(ballsize,pos,R,dt,speed)
+function [Task] = plot_ball(ballsize,pos,R,dt,speed)
 %Print Task Name
-Task = 'Running Plot Magnet Ball'
+Task = 'Running Plot Magnet Ball';
 %---------------------
 
 %% Draw Sphere
@@ -26,7 +26,7 @@ if nargin ==1
     % height : ensures ample height to see whole picture
     height = ballsize*5;
     % -x x -y y -z z step
-    axis([-20 20 -20 20 -height height])
+    axis([-20 20 -20 20 -height 20])
     % Set the viewing angle
     view(-135, 40)
     % Label the axes.
@@ -38,7 +38,52 @@ if nargin ==1
     % Title of Figure
     title('Ball Trajectory')
     hold on
+    x = 0:0.001:2*pi
+    a = cos(x);
+    b = sin(x);
+    plot(a,b)
+% Omnimagnet Representation  Credit: Husam Aldahiyat Date 5 Sep, 2008 13:44:02 
+    s=4;
+    x=[-1 1  1 -1 -1 -1;...
+        1 1 -1 -1  1  1;...
+        1 1 -1 -1  1  1;...
+       -1 1  1 -1 -1 -1]*s/2;
     
+    y=[-1 -1 1  1 -1 -1;...
+       -1  1 1 -1 -1 -1;...
+       -1  1 1 -1  1  1;...
+       -1 -1 1  1  1  1]*s/2;
+    
+   z=[0 0 0 0 0 1;...
+      0 0 0 0 0 1;...
+      1 1 1 1 0 1;...
+      1 1 1 1 0 1]*s;
+for i=1:6
+    h=patch(x(:,i),y(:,i),z(:,i),'k');
+    set(h,'edgecolor','r')
+end
+    
+    vectsize = size(x)
+
+    x = 0:0.001:2*pi;
+    a = cos(x)*s+s;
+    b = sin(x)*s*20;
+    plot(a,b)
+
+    x = 0:0.001:2*pi;
+    a = cos(x)*s-s;
+    b = sin(x)*s*20;
+    plot(a,b)
+
+    x = 0:0.001:2*pi;
+    a = cos(x)*s;
+    b = sin(x)*s;
+    plot(a,b)
+
+    x = 0:0.001:2*pi;
+    a = cos(x)*s*1.5;
+    b = sin(x)*s*1.5;
+    plot(a,b)
 else
     %% Draw Sphere
     [x,y,z] = sphere;

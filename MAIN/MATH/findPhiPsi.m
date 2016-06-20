@@ -6,9 +6,9 @@
 % decomposes R into phi(rotation about world-y-axis ) and psi(rotation about world-z-axis)
 %}
 
-function [ phi, psi ] = findPhiPsi( wRb )
+function [ phi, psi, Task] = findPhiPsi( wRb )
 %Print Task Name
-Task = 'Running Find Phi and Psi'
+Task = 'Running Find Phi and Psi';
 %---------------------
 
 %% Find phi and psi
