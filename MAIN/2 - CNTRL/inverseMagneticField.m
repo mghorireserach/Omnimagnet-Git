@@ -6,6 +6,7 @@
 % A. J. Petruska, J. B. Brink, and J. J. Abbott, "First Demonstration of a Modular and Reconfigurable Magnetic-Manipulation System," IEEE Int. Conf. Robotics and Automation, 2015 (to appear). 
 % A. J. Petruska, A. W. Mahoney, and J. J. Abbott, "Remote Manipulation with a Stationary Computer-Controlled Magnetic Dipole Source," IEEE Trans. Robotics, 30(5):1222-1227, 2014. 
 % A. J. Petruska and J. J. Abbott, "Omnimagnet: An Omnidirectional Electromagnet for Controlled Dipole-Field Generation," IEEE Trans. Magnetics, 50(7):8400810(1-10), 2014. 
+% Link: http://www.telerobotics.utah.edu/index.php/Research/Omnimagnets
 
 function [ currx, curry, currz, Task ] = inverseMagneticField(x,y,phi,psi)
 %Print Task Name
@@ -36,8 +37,8 @@ if nargin == 4
     % Magnitude of Field
     a = 100;
     % Magnetic Field with constant magnitude
-    B = rotz(psi)*roty(phi)*[0;0;a]
-
+    R = rotz(psi)*roty(phi);
+    B = R(7:9)';
     %% Eqn B => I
     % Unit Vecotr for pos
     p_hat = pos/norm(pos);

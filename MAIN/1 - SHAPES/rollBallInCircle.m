@@ -4,17 +4,7 @@
 % A. J. Petruska, J. B. Brink, and J. J. Abbott, "First Demonstration of a Modular and Reconfigurable Magnetic-Manipulation System," IEEE Int. Conf. Robotics and Automation, 2015 (to appear). 
 % A. J. Petruska, A. W. Mahoney, and J. J. Abbott, "Remote Manipulation with a Stationary Computer-Controlled Magnetic Dipole Source," IEEE Trans. Robotics, 30(5):1222-1227, 2014. 
 % A. J. Petruska and J. J. Abbott, "Omnimagnet: An Omnidirectional Electromagnet for Controlled Dipole-Field Generation," IEEE Trans. Magnetics, 50(7):8400810(1-10), 2014. 
-
-% INSTRUCTIONS
-%{              
-%               Init-x(x0) Init-y(y0) Init-phi(phi) Init-psi(psi) 
-%               NOTE: "Init position and Orientation"
-%               Radius of circle(radius)
-%               NOTE: "radius of circle about origin"
-%               Period(T) Time-Step(dt)
-%               NOTE: "The total time to complete the Circle and the number
-%                      of steps to be displayed"
-%}
+% Link: http://www.telerobotics.utah.edu/index.php/Research/Omnimagnets
 
 function [ currX, currY, currZ ,Task] = rollBallInCircle(x0,y0,phi,psi,radius,T,dt,speed,ballsize)
 %Print Task Name

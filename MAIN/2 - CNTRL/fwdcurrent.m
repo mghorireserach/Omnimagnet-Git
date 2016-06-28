@@ -5,6 +5,7 @@
 % A. J. Petruska, J. B. Brink, and J. J. Abbott, "First Demonstration of a Modular and Reconfigurable Magnetic-Manipulation System," IEEE Int. Conf. Robotics and Automation, 2015 (to appear). 
 % A. J. Petruska, A. W. Mahoney, and J. J. Abbott, "Remote Manipulation with a Stationary Computer-Controlled Magnetic Dipole Source," IEEE Trans. Robotics, 30(5):1222-1227, 2014. 
 % A. J. Petruska and J. J. Abbott, "Omnimagnet: An Omnidirectional Electromagnet for Controlled Dipole-Field Generation," IEEE Trans. Magnetics, 50(7):8400810(1-10), 2014. 
+% Link: http://www.telerobotics.utah.edu/index.php/Research/Omnimagnets
 
 function [ pf, wRb, Task] = fwdcurrent(I0, If,p0,wRb,T,dt,speed,ballsize)
 %Print Task Name
@@ -38,8 +39,10 @@ if nargin == 8
     % Rotation about world-z-axis
     psi = psi2 -psi1;
     % Rotation about world-y-axis
-    phi = phi2-phi1;
-
+    phi = -phi2+phi1;
+    
+%% Old Method: phi and psi rotation
+    %{
     %% Rotate Ball NOTE: Rotation takes T/4 time and Translate takes 3T/4 time
         %% Visualization of Rotation
         % Number of steps in rotation
@@ -90,8 +93,48 @@ if nargin == 8
         plot_ball(ballsize,p,wRb,0,speed);
         % Final position
     pf = p;
+    %}
+if phi==0 && psi == 0
+    pf = p0;
+    %wRb = wRb;
 else
-    ERROR = 'Not Enough Input Arguments'
+    %% Single Angle Rotation
+% Current Rotation Matrix
+R = rotz(psi)*roty(phi);
+% Trace of current rotation matrix from magent-field to world
+tau = trace(R);
+% Unit vector of axis of rotation
+u_hat = (1/sqrt((1-tau)*(3-tau)))*[R(6)-R(8);R(7)-R(3);R(4)-R(2)];
+% angle of rotatoin
+th = acos((tau-1)/2);
+% average agular velocity 
+omega = th/T;
+% Number of steps to show in visual
+reps = floor(T/dt);
+% set current orienttation
+Rot = wRb;
+% set current position
+step = p0;
+% direction of linear movemnt
+direction = [u_hat(1:2);0];
+% linear velocity
+vel = omega*ballsize*direction;
+% vector to skew symmetric matrix
+u_skew = vect2skew(u_hat);
+for n = 1:reps
+    
+    Rot = Rot*(eye(3)*cos(omega*dt)+u_hat*u_hat'*(1-cos(omega*dt))+u_skew*sin(omega*dt));
+    step = step + vel*dt;
+    plot_ball(ballsize,step,Rot,dt,speed)
+    
+end
+    wRb = wRb*(eye(3)*cos(th)+u_hat*u_hat'*(1-cos(th))+u_skew*sin(th));
+    pf = p0 + vel*T;
+    plot_ball(ballsize,pf,wRb,dt,speed)
+end
+else
+    ERROR = 'Not Enough Input Arguments';
+    display(ERROR);
 end
 end
 
