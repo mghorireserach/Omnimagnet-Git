@@ -1,5 +1,6 @@
 %% PLOT MAGNET BALL POSITION
 % Author: Mohamed Ghori
+
 % INSTRUCTIONS 
 %{
 % 2-Steps
@@ -11,6 +12,7 @@
 %                                       "the time step & the scale"
 %----------------------------------------------------------------------
 %}
+
 function [Task] = plot_ball(ballsize,pos,R,dt,speed)
 %Print Task Name
 Task = 'Running Plot Magnet Ball';
@@ -38,10 +40,7 @@ if nargin ==1
     % Title of Figure
     title('Ball Trajectory')
     hold on
-    x = 0:0.001:2*pi
-    a = cos(x);
-    b = sin(x);
-    plot(a,b)
+    
 % Omnimagnet Representation  Credit: Husam Aldahiyat Date 5 Sep, 2008 13:44:02 
     s=4;
     x=[-1 1  1 -1 -1 -1;...
@@ -62,8 +61,9 @@ for i=1:6
     h=patch(x(:,i),y(:,i),z(:,i),'k');
     set(h,'edgecolor','r')
 end
+    % Circles
     
-    vectsize = size(x)
+    vectsize = size(x);
 
     x = 0:0.001:2*pi;
     a = cos(x)*s+s;

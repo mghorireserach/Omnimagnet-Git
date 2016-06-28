@@ -4,8 +4,9 @@
 % A. J. Petruska, J. B. Brink, and J. J. Abbott, "First Demonstration of a Modular and Reconfigurable Magnetic-Manipulation System," IEEE Int. Conf. Robotics and Automation, 2015 (to appear). 
 % A. J. Petruska, A. W. Mahoney, and J. J. Abbott, "Remote Manipulation with a Stationary Computer-Controlled Magnetic Dipole Source," IEEE Trans. Robotics, 30(5):1222-1227, 2014. 
 % A. J. Petruska and J. J. Abbott, "Omnimagnet: An Omnidirectional Electromagnet for Controlled Dipole-Field Generation," IEEE Trans. Magnetics, 50(7):8400810(1-10), 2014. 
+% Link: http://www.telerobotics.utah.edu/index.php/Research/Omnimagnets
 
-function [ currx, curry, currz, wRb, Task ] = ballfwd(p1,p2,wRb,T,dt,speed,ballsize)
+function [ currX, currY, currZ, wRb, Task ] = ballfwd(p1,p2,wRb,T,dt,speed,ballsize)
 %Print Task Name
 Task = 'Running Move Ball Fwd';
 %---------------------
@@ -32,16 +33,17 @@ if nargin == 7
     % Decompose wRb into phi & psi components
     [phi, psi] = findPhiPsi(wRb);
     % Finding required current for phi and psi orientation
-    [currX, currY, currZ] = inverseMagneticField(p1(1), p1(2), phi, psi);
-    currx = currX;
-    curry = currY;
-    currz = currZ;
+    [currx, curry, currz] = inverseMagneticField(p1(1), p1(2), phi, psi);
+    currX = currx;
+    currY = curry;
+    currZ = currz;
 
     %% Rotate Ball about world-z-axis
     % direction vector from p1 to p2 in world
     direction = (p2-p1)/norm(p2-p1);
     % unit vector of Magnetic-Field y-axis in world x-y-plane
     yaxis = [wRb(4:5)';0];
+    anglediff(direction,yaxis)
     % Angle Between Magnetic-Field y-axis and vector pointing to next position
     theta = (pi/2 - anglediff(direction,yaxis));
     % For no rotation needed EXCEPTION
@@ -59,6 +61,7 @@ if nargin == 7
         % Visualization Function of ball after Rotation
         for n = 1 : rotsteps
             % Rotation
+            rotz(omegaz*dt);
             Rrot = rotz(omegaz*dt)*Rrot;
             % Visualization Function of ball after Rotation
             plot_ball(ballsize,p1,Rrot,dt,speed);
@@ -67,10 +70,10 @@ if nargin == 7
                 [phi, psi] = findPhiPsi(Rrot);
                 % Finding required current for phi and psi orientation of
                 % magnet-field
-                [currX, currY, currZ] = inverseMagneticField(p1(1), p1(2), phi, psi);
-                currx = [currx;currX];
-                curry = [curry;currY];
-                currz = [currz;currZ];
+                [currx, curry, currz] = inverseMagneticField(p1(1), p1(2), phi, psi);
+                currX = [currX;currx];
+                currY = [currY;curry];
+                currZ = [currZ;currz];
 
         end
 
@@ -80,14 +83,13 @@ if nargin == 7
         plot_ball(ballsize,p1,wRb,0,speed);
         % Find the Neccessary Current and add it to current set 
             % Decompose wRb into phi & psi components    
-            [phi, psi] = findPhiPsi(Rrot);
+            [phi, psi] = findPhiPsi(wRb);
             % Finding required current for phi and psi orientation of
             % magnet-field
-            [currX, currY, currZ] = inverseMagneticField(p1(1), p1(2), phi, psi);
-            currx = [currx;currX];
-            curry = [curry;currY];
-            currz = [currz;currZ];
-
+            [currx, curry, currz] = inverseMagneticField(p1(1), p1(2), phi, psi);
+            currX = [currX;currx];
+            currY = [currY;curry];
+            currZ = [currZ;currz];
     %% Translation
     % Rotation required to reach p2 with no slip condition
     gama = norm(p2-p1)/(ballsize);
@@ -112,14 +114,13 @@ if nargin == 7
             plot_ball(ballsize,p,Rtrans,dt,speed);
             % Find the Neccessary Current and add it to current set 
                 % Decompose wRb into phi & psi components    
-                [phi, psi] = findPhiPsi(Rrot);
+                [phi, psi] = findPhiPsi(Rtrans);
                 % Finding required current for phi and psi orientation of
                 % magnet-field
-                [currX, currY, currZ] = inverseMagneticField(p1(1), p1(2), phi, psi);
-                currx = [currx;currX];
-                curry = [curry;currY];
-                currz = [currz;currZ];
-
+                [currx, curry, currz] = inverseMagneticField(p1(1), p1(2), phi, psi);
+                currX = [currX;currx];
+                currY = [currY;curry];
+                currZ = [currZ;currz];
         end
 
         % Pre multiply rotation for fixed frame
@@ -128,15 +129,16 @@ if nargin == 7
         plot_ball(ballsize,p2,wRb,0,speed)
         % Find the Neccessary Current and add it to current set 
             % Decompose wRb into phi & psi components    
-            [phi, psi] = findPhiPsi(Rrot);
+            [phi, psi] = findPhiPsi(wRb);
             % Finding required current for phi and psi orientation of
             % magnet-field
-            [currX, currY, currZ] = inverseMagneticField(p1(1), p1(2), phi, psi);
-            currx = [currx;currX];
-            curry = [curry;currY];
-            currz = [currz;currZ];    
+            [currx, curry, currz] = inverseMagneticField(p1(1), p1(2), phi, psi);
+            currX = [currX;currx];
+            currY = [currY;curry];
+            currZ = [currZ;currz];    
 else
-    ERROR = 'Not Enough Input Arguments'
+    ERROR = 'Not Enough Input Arguments';
+    display(ERROR);
 end
 end
 
