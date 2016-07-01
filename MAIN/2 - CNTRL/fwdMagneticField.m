@@ -47,7 +47,7 @@ if nargin == 5
     % Eqn parts for B => I 
     temp = 2*pi*(norm(pos)^3)*(M\(3*p_hat*(p_hat') - 2*eye(3)))/mu
     % Current Vector
-    B = temp\I;
+    B = temp\I
     % Unit Vector in the Direction of B
     u = B/norm(B);
     end

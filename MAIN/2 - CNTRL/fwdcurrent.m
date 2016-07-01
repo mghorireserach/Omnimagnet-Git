@@ -104,7 +104,11 @@ R = rotz(psi)*roty(phi);
 % Trace of current rotation matrix from magent-field to world
 tau = trace(R);
 % Unit vector of axis of rotation
-u_hat = (1/sqrt((1-tau)*(3-tau)))*[R(6)-R(8);R(7)-R(3);R(4)-R(2)];
+u_hat = (1/sqrt((1+tau)*(3-tau)))*[R(6)-R(8);R(7)-R(3);R(4)-R(2)]
+if isnan(u_hat)
+puase();
+
+end
 % angle of rotatoin
 th = acos((tau-1)/2);
 % average agular velocity 
@@ -123,7 +127,7 @@ vel = omega*ballsize*direction;
 u_skew = vect2skew(u_hat);
 for n = 1:reps
     
-    Rot = Rot*(eye(3)*cos(omega*dt)+u_hat*u_hat'*(1-cos(omega*dt))+u_skew*sin(omega*dt));
+    Rot = Rot*(eye(3)*cos(omega*dt)+u_hat*u_hat'*(1-cos(omega*dt))+u_skew*sin(omega*dt))
     step = step + vel*dt;
     plot_ball(ballsize,step,Rot,dt,speed)
     
