@@ -89,8 +89,13 @@ else
     [x,y,z] = sphere;
     % Draw Function
     % set(s(1), 'xdata',ballsize*x+x0 ,'ydata', ballsize*y+y0,'zdata',ballsize*z+ballsize)
+<<<<<<< HEAD
     s = mesh(ballsize*x+pos(1),ballsize*y+pos(2),ballsize*z+ballsize,'FaceColor',[1 0 0]);
     colormap 'hsv'
+=======
+    s = mesh(ballsize*x+pos(1),ballsize*y+pos(2),ballsize*z+ballsize);
+    colormap hsv
+>>>>>>> parent of b322448... Show Magnetic Field
     alpha(.1)
     %% Draw Arrow Pointing North(magnet-Z-Axis) & AxisOfRolling(magnet-Y-Axis)
     % Elongate Quiver
