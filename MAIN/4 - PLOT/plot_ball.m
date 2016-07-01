@@ -90,7 +90,7 @@ else
     % Draw Function
     % set(s(1), 'xdata',ballsize*x+x0 ,'ydata', ballsize*y+y0,'zdata',ballsize*z+ballsize)
     s = mesh(ballsize*x+pos(1),ballsize*y+pos(2),ballsize*z+ballsize,'FaceColor',[1 0 0]);
-    colormap 'red'
+    colormap 'hsv'
     alpha(.1)
     %% Draw Arrow Pointing North(magnet-Z-Axis) & AxisOfRolling(magnet-Y-Axis)
     % Elongate Quiver
