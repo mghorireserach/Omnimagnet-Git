@@ -39,19 +39,25 @@ Task = 'Running playback';
 %% playback
 % Enough Inputs EXCEPTION
 if nargin == 8 ||nargin == 3 ||nargin == 4 ||nargin == 6
-    % 4 Params
-    if nargin ==4
-        T = 1;
+    %% 4 Params
+    if nargin == 4
+        % Time to completion
+        T = 10;
+        % time step to run play back
         dt = 0.1;
+        % speed of the video
         speed = 1;
+        % tool size
         ballsize = 1;
     end
-    % 6 Params
+    %% 6 Params
     if nargin ==6
+        % speed of video
         speed = 1;
+        % size of tool
         ballsize = 1;
     end
-%% 
+    
     % Number of recorded positions
     arraysize = size(currx);
     % Init rotation matrix

@@ -51,7 +51,8 @@ format compact
 if nargin == 0||nargin == 1||nargin == 6||nargin == 8||nargin == 10
     %% Add Paths 
     % MATLAB add path function
-    %addpath('MATH','CNTRL','PLOT','SHAPES');
+    addpath(genpath('C:\Users\alighori\Documents\2) MENU\1) OCCUPATION\JOBS\JOB(05.26.2016) - RA (Dr. Aaron Becker)\Test Project (Omni-Magnet & Magnet Ball)\MATLAB CODE\Omnimagnet_GIT\Omnimagnet-Git\MAIN'))
+    %addpath('MATH-ROT','MATH-QUAT','MATH-THETA','MATH-HOM','CNTRL','PLOT','SHAPES','MAIN');
     
     %% Init Graph
     if nargin ==10
@@ -59,68 +60,99 @@ if nargin == 0||nargin == 1||nargin == 6||nargin == 8||nargin == 10
     else
         plot_ball(1);
     end
-    %% Following Shape
-    % 0 Param "Blind"
+%% Following Shape
+    %% 0 Param "Blind"
+    % check input 
     if nargin ==0 
+        % randomly chose a shape (1-rectangle 2-circle)
         a = ceil(2*rand);
+        % assign shapee
         if a==1
-        [curra, currb, currc,p0] = rollBallInSquare();
-        playback(curra,currb,currc);
+            % run rectangular trajectory 
+            [curra, currb, currc,p0] = rollBallInSquare();
+            % playback trajectory
+            playback(curra,currb,currc,p0);
         else
-        [curra, currb, currc,p0] = rollBallInCircle();
-        playback(curra,currb,currc);
+            % run Circle trajectory
+            [curra, currb, currc,p0] = rollBallInCircle();
+            % playback trajectory
+            playback(curra,currb,currc,p0);
         end
     end
 
-    % 1 Param "Given Path Shape"
+    %% 1 Param "Given Path Shape"
+    % check input 
     if nargin == 1
         if type==1
+            % run rectangle trajectory
             [curra, currb, currc,p0] = rollBallInSquare();
+            % playback trajectory
             playback(curra,currb,currc,p0);
         else
+            % run circle trajectory
             [curra, currb, currc,p0] = rollBallInCircle();
+            % playback trajectory
             playback(curra,currb,currc,p0);
         end
     end
-if 1
-end
-    % 6 Param "Given Path Shape, & Path Parameters"
+
+    %% 6 Param "Given Path Shape, & Path Parameters"
+    % check input 
     if nargin ==6
         if type==1
+            % run rectangle trajectory (specified rectangle)
             [curra, currb, currc,p0] = rollBallInSquare(x0,y0,phi,psi,ShapeSize);
+            % playback trajectory
             playback(curra,currb,currc,p0);
         else
+            % run circle trajectory (specified circle)
             [curra, currb, currc,p0] = rollBallInCircle(x0,y0,phi,psi,ShapeSize);
+            % playback trajectory
             playback(curra,currb,currc,p0);
         end
     end
+    
 
-    % 8 Param "Given Path Shape, Path Params, & Time Params"
+    %% 8 Param "Given Path Shape, Path Params, & Time Params"
+    % check input 
     if nargin == 8
         if type==1
+            % run rectangle trajectory (specified rectangle, Time to complete & time step to reccord)
             [curra, currb, currc,p0] = rollBallInSquare(x0,y0,phi,psi,ShapeSize,T,dt);
+            % playback trajectory
             playback(curra,currb,currc,p0,T,dt);
         else
+            % run circle trajectory (specified Circle, Time to complete & time step to reccord)
             [curra, currb, currc,p0] = rollBallInCircle(x0,y0,phi,psi,ShapeSize,T,dt);
+            % playback trajectory
             playback(curra,currb,currc,p0,T,dt);
         end
     end
 
-    % 10 Param "Given Path Shape, Path Params, & Time Params, Video Params"
+    %% 10 Param "Given Path Shape, Path Params, & Time Params, Video Params"
+    % check input 
     if nargin == 10
         if type==1
+            % run rectangle trajectory (specified rectangle, Time to complete & time step to reccord,tool size & speed of video)
             [curra, currb, currc,p0] = rollBallInSquare(x0,y0,phi,psi,ShapeSize,T,dt,speed,ballsize);
+            % playback trajectory
             playback(curra,currb,currc,p0,T,dt,speed,ballsize);
         else
+            % run circle trajectory (specified Circle, Time to complete & time step to reccord,tool size & speed of video)
             [curra, currb, currc,p0] = rollBallInCircle(x0,y0,phi,psi,ShapeSize,T,dt,speed,ballsize);
+            % playback trajectory
             playback(curra,currb,currc,p0,T,dt,speed,ballsize);
         end
     end
     
-    
+%% Write Solenoid-Current Values to MS-Excel File    
+% create File
 filename = 'currentdata.xlsx';
+% write curra (inner solenoid)
 xlswrite(filename,curra,'currx','A1');
+% write currb (middle solenoid)
 xlswrite(filename,currb,'curry','A1');
+% write currc (Outer solenoid)
 xlswrite(filename,currc,'currz','A1');
 
 else

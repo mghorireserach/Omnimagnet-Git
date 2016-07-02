@@ -76,8 +76,22 @@ end
     plot(a,b)
 
     x = 0:0.001:2*pi;
-    a = cos(x)*s;
-    b = sin(x)*s;
+    Tx = cos(x)*s;
+    Ty = sin(x)*s;
+    sizex = size(x);
+    Tz = 2*ones(sizex(2),1);
+    fill3(Tx,Ty,Tz,'r')
+    Bx = cos(x)*s;
+    By = sin(x)*s;
+    sizex = size(x);
+    Bz = zeros(sizex(2),1);
+    fill3(Bx,By,Bz,'b')
+    
+    [Cx,Cy,Cz] = cylinder(1);
+    surf(Cx,Cy,Cz)
+    I = imread('capture.png');
+    warp(x,y,z,I);
+    
     plot(a,b)
 
     x = 0:0.001:2*pi;
@@ -89,8 +103,12 @@ else
     [x,y,z] = sphere;
     % Draw Function
     % set(s(1), 'xdata',ballsize*x+x0 ,'ydata', ballsize*y+y0,'zdata',ballsize*z+ballsize)
-    s = mesh(ballsize*x+pos(1),ballsize*y+pos(2),ballsize*z+ballsize);
-    colormap hsv
+    x = ballsize*x+pos(1);
+    y = ballsize*y+pos(2);
+    z = ballsize*z+ballsize;
+    s = surf(x,y,z);
+    I = imread('capture.png');
+    h =  warp(x,y,z,I);
     alpha(.1)
     %% Draw Arrow Pointing North(magnet-Z-Axis) & AxisOfRolling(magnet-Y-Axis)
     % Elongate Quiver
@@ -112,6 +130,7 @@ else
     set(a,'visible','off')
     set(b,'visible','off')
     set(c,'visible','off')
+    set(h,'visible','off')
     % Draws a red dot to denote poition already visited
     scatter3(pos(1),pos(2),0,'.','red')
 end   

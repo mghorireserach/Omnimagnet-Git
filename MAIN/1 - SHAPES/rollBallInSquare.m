@@ -38,41 +38,58 @@ Task = 'Running Roll Ball in Square';
 % Enough Inputs EXCEPTION
 if nargin == 0||nargin == 5||nargin == 7||nargin == 9
     % Default Params____ 
-    % Zero Params
+    
+    %% Zero Params
     if nargin == 0
+        % Init x
         x0 = 5;
+        % Init y
         y0 = 5;
+        % Init latitude
         phi = 0;
+        % Init longitude
         psi = 0;
+        % 3rd Corner of the rectangular trajectory 
         corner = [10;10];
+        % Time to completion of trajectory
         T = 1;
+        % time step at which to reccord
         dt = 0.01;
+        % speed of video
         speed = 50;
+        % tool size
         ballsize = 1;
     end
 
-    % 5 Params "Square Dimensions Only"
+    %% 5 Params "Square Dimensions Only Given"
     if nargin == 5
+        %  Time  t completion of trajectory
         T = 1;
+        % time step at which to reccord
         dt = 0.01;
-        speed = 1;
+        % speed of video
+        speed = 10;
+        % tool size
         ballsize = 1;    
     end
 
-    % 7 params "Size of Ball & Video Speed Unknown"
+    %% 7 params "Size of Ball & Video Speed Unknown"
     if nargin == 7
+        % speed of video
         speed = 1;
+        % size of tool 
         ballsize = 1;
     end
-
+    % Init pos vector from
     p0 = [x0;y0;0];
+    
     %% rollBallInSquare
     %  --------
     % |        |  W
     % |        |
     %  --------
     %     L
-    % Length and Widht of the "Square"
+    % Length and Width of the "Square"
     L = abs(x0-corner(1));
     W = abs(y0-corner(2));
 

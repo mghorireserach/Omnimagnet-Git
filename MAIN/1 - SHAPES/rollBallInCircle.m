@@ -38,17 +38,46 @@ Task = 'Running Roll Ball in Circle';
 % Enough Inputs EXCEPTION
 if nargin == 0||nargin == 5||nargin == 7||nargin == 9
     % Default Variables 
+    %% 0 Input 
     if nargin == 0
+        % init x
         x0 = 10;
+        % init y
         y0 = 0;
+        % init latitude
         phi = 0;
+        % init longitude
         psi = 0;
+        % radius of circle
         radius = 10;
+        % speed of video
         speed = 1;
+        % tool size
         ballsize = 1;
+        % time to completion
         T = 10;
+        % time step at which to reccord
         dt = 0.1;
     end
+    %% 5 Input 
+    if nargin == 0
+        % time to completion
+        T = 10;
+        % time step at which to reccord
+        dt = 0.1;    
+        % speed of video
+        speed = 1;
+        % tool size
+        ballsize = 1;
+    end
+    %% 7 Input 
+    if nargin == 0
+        % speed of video
+        speed = 1;
+        % tool size
+        ballsize = 1;
+    end
+    
     %% rollBallInCircle
     % Initiate current vectors
     currX = [];
@@ -60,19 +89,24 @@ if nargin == 0||nargin == 5||nargin == 7||nargin == 9
 
     % Angle Step size
     del = 2*pi/(T/dt);
-
+    % Init pos vector
     pos1 = [x0;y0;0];
+    
     % Full Cirlce
     for Q = 0:del:2*pi
         % Pos current
         pos2 = [radius*cos(Q);radius*sin(Q);0];
         if isnan(pos1)==0
-        % Use ballfwd Control
-        [ currx, curry, currz, wRb] = ballfwd(pos1,pos2,wRb,dt,dt,speed,ballsize);
-        % Set Required Current Vecotrs 
-        currX = [currX;currx];
-        currY = [currY;curry];
-        currZ = [currZ;currz];
+            % Time to completion point to point movement
+            T = dt;
+            % add 4 steps between points
+            dt = dt/4;
+            % Use ballfwd Control
+            [ currx, curry, currz, wRb] = ballfwd(pos1,pos2,wRb,T,dt,speed,ballsize);
+            % Set Required Current Vecotrs 
+            currX = [currX;currx];
+            currY = [currY;curry];
+            currZ = [currZ;currz];
         end
         % set Old pos
         pos1 = pos2;

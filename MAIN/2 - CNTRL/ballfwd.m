@@ -43,7 +43,6 @@ if nargin == 7
     direction = (p2-p1)/norm(p2-p1);
     % unit vector of Magnetic-Field y-axis in world x-y-plane
     yaxis = [wRb(4:5)';0];
-    anglediff(direction,yaxis)
     % Angle Between Magnetic-Field y-axis and vector pointing to next position
     theta = (pi/2 - anglediff(direction,yaxis));
     % For no rotation needed EXCEPTION
