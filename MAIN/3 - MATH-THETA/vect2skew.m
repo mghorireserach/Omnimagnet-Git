@@ -6,7 +6,7 @@
 %
 
 
-function [ skew ] = vect2skew(vector)
+function [ skew,Task ] = vect2skew(vector)
 %Print Task Name
 Task = 'Running vect2skew';
 %---------------------
@@ -27,7 +27,8 @@ if nargin == 1
           -b    a   0  ];
 
 else
-    ERROR = 'Not Enough Input Arguments'
+    ERROR = 'Not Enough Input Arguments';
+    display(ERROR);
 end
 end
 

@@ -144,6 +144,7 @@ if nargin == 0||nargin == 1||nargin == 6||nargin == 8||nargin == 10
             playback(curra,currb,currc,p0,T,dt,speed,ballsize);
         end
     end
+
     
 %% Write Solenoid-Current Values to MS-Excel File    
 % create File

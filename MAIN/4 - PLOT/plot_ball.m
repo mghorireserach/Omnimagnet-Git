@@ -17,7 +17,7 @@ function [Task] = plot_ball(ballsize,pos,R,dt,speed)
 %Print Task Name
 Task = 'Running Plot Magnet Ball';
 %---------------------
-
+persistent h
 %% Draw Sphere
 if nargin ==1
     %% Creating Figure
@@ -60,44 +60,39 @@ if nargin ==1
 for i=1:6
     h=patch(x(:,i),y(:,i),z(:,i),'k');
     set(h,'edgecolor','r')
+    alpha(h,0.1)
 end
+
     % Circles
-    
-    vectsize = size(x);
-
     x = 0:0.001:2*pi;
-    a = cos(x)*s+s;
-    b = sin(x)*s*20;
-    plot(a,b)
-
-    x = 0:0.001:2*pi;
-    a = cos(x)*s-s;
-    b = sin(x)*s*20;
-    plot(a,b)
-
-    x = 0:0.001:2*pi;
-    Tx = cos(x)*s;
-    Ty = sin(x)*s;
+    Tx = cos(x);
+    Ty = sin(x);
     sizex = size(x);
-    Tz = 2*ones(sizex(2),1);
+    Tz = 2*ones(sizex(2),1)+s/2-1;
     fill3(Tx,Ty,Tz,'r')
-    Bx = cos(x)*s;
-    By = sin(x)*s;
+    
+    Bx = cos(x);
+    By = sin(x);
     sizex = size(x);
-    Bz = zeros(sizex(2),1);
+    Bz = zeros(sizex(2),1)+s/2-1;
     fill3(Bx,By,Bz,'b')
     
     [Cx,Cy,Cz] = cylinder(1);
+    Cz = 2*Cz+s/2-1;
+    MAT = [Cx; Cy; Cz];
+    
     surf(Cx,Cy,Cz)
     I = imread('capture.png');
-    warp(x,y,z,I);
+    warp(Cx,Cy,Cz,I);
     
-    plot(a,b)
+    I = imread('capture.png');
+    h =  warp(x,y,z,I);
+    alpha(h,.25)
+    h = hgtransform;
+    
 
-    x = 0:0.001:2*pi;
-    a = cos(x)*s*1.5;
-    b = sin(x)*s*1.5;
-    plot(a,b)
+  
+    
 else
     %% Draw Sphere
     [x,y,z] = sphere;
@@ -106,10 +101,10 @@ else
     x = ballsize*x+pos(1);
     y = ballsize*y+pos(2);
     z = ballsize*z+ballsize;
-    s = surf(x,y,z);
-    I = imread('capture.png');
-    h =  warp(x,y,z,I);
-    alpha(.1)
+    %s = surf(x,y,z);
+    Rot = [R,[0;0;0];0,0,0,1];
+    set(h,'Matrix',Rot)
+    drawnow
     %% Draw Arrow Pointing North(magnet-Z-Axis) & AxisOfRolling(magnet-Y-Axis)
     % Elongate Quiver
     R(7:9) = 4*ballsize*R(7:9);
@@ -121,16 +116,14 @@ else
     % Draw x-Arrow
     c = quiver3(pos(1),pos(2),pos(3)+ballsize,R(1),R(2),R(3));
     
-    %% sets time delay
+    %% sets time delay "causes warning in first run"
     pause(dt/speed);
     
     %% makes prvious ball invisible & Marks Position
-    % Ball Visibility
-    set(s,'visible','off')
-    set(a,'visible','off')
-    set(b,'visible','off')
-    set(c,'visible','off')
-    set(h,'visible','off')
+    delete(a);
+    delete(b);
+    delete(c);
+    delete(h);
     % Draws a red dot to denote poition already visited
     scatter3(pos(1),pos(2),0,'.','red')
 end   

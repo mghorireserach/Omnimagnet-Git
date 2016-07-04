@@ -42,9 +42,9 @@ if nargin == 8 ||nargin == 3 ||nargin == 4 ||nargin == 6
     %% 4 Params
     if nargin == 4
         % Time to completion
-        T = 10;
+        T = 0.1;
         % time step to run play back
-        dt = 0.1;
+        dt = 0.01;
         % speed of the video
         speed = 1;
         % tool size

@@ -8,7 +8,7 @@
 %% NOTE: NOT TESTED TO WORK
 function [ Task ] = showmagfield( currx,curry,currz,p0)
 %Print Task Name
-Task = 'Running Show Magnetic Field';
+Task = 'Running Show Magnetic Field'
 %---------------------
 % INSTRUCTIONS
 %{
@@ -16,7 +16,7 @@ Task = 'Running Show Magnetic Field';
 %}
 
 % Enough Inputs EXCEPTION
-if nargin == 0
+if nargin == 4
     % Step size between quivers
     delp = 1; 
     % Initialize posB (Position of Quiver)
@@ -24,15 +24,21 @@ if nargin == 0
     % Draw 200 quivers to outline magnetic field lines
     for n = 0:200
         % Magnetic Field Value at position
-        B = fwdMagneticField(curra,currb,currc,p0(1),p0(2));
+        [phi,psi,B] = fwdMagneticField(currx,curry,currz,posB(1),posB(2));
+        % Orientation Matrix
+        %R = rotz(psi)*roty(phi);
         % Direction of Magnetic Field line
         direction = B/norm(B);
+        % why is it not working 
+        
         % Draw arrow tangent to magnetic field line
-        quiver(direction(1),direction(2),posB(1),posB(2));
+        quiver3(direction(1),direction(2),posB(1),posB(2));
+        hold on
         % Iterate through positions along the magnetic field line
         posB = direction*delp+posB;
     end
 else
-    ERROR = 'Not Enough Input Arguments'
+    ERROR = 'Not Enough Input Arguments';
+    display(ERROR);
 end
 end

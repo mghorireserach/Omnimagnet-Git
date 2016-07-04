@@ -112,7 +112,8 @@ if nargin == 0||nargin == 5||nargin == 7||nargin == 9
         pos1 = pos2;
     end
 else
-    ERROR = 'Not Enough Input Arguments'
+    ERROR = 'Not Enough Input Arguments';
+    display(ERROR);
 end
 end
 

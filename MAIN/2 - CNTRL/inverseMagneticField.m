@@ -34,8 +34,6 @@ if nargin == 4
     M = eye(3);
     % position of the ball center
     pos = [x,y,0];
-    % Magnitude of Field
-    a = 100;
     % Magnetic Field with constant magnitude
     R = rotz(psi)*roty(phi);
     B = R(7:9)';
@@ -52,7 +50,8 @@ if nargin == 4
     curry = I(2);
     currz = I(3);
 else
-    ERROR = 'Not Enough Input Arguments'
+    ERROR = 'Not Enough Input Arguments';
+    display(ERROR);
 end
 
 end

@@ -37,9 +37,9 @@ if nargin == 8
         % Final Orientation
         [phi2, psi2] = fwdMagneticField( If(1), If(2), If(3), p0(1), p0(2) );
         % Rotation about world-z-axis
-        psi = psi2 -psi1;
+        psi = psi2 -psi1
         % Rotation about world-y-axis (negativd phi2 due to backward rotation)
-        phi = -phi2+phi1;
+        phi = -phi2+phi1
     % If there is no change in orientation
     if phi==0 && psi == 0
         pf = p0;
@@ -47,11 +47,11 @@ if nargin == 8
     else
         %% Single Angle Rotation
         % Current Rotation Matrix
-        R = rotz(psi)*roty(phi);
+        R = rotz(psi)*roty(phi)
         % Trace of current rotation matrix from magent-field to world
-        tau = trace(R);
+        tau = trace(R)
         % Unit vector of axis of rotation
-        u_hat = (1/sqrt((1+tau)*(3-tau)))*[R(6)-R(8);R(7)-R(3);R(4)-R(2)];
+        u_hat = (1/sqrt((1+tau)*(3-tau)))*[R(6)-R(8);R(7)-R(3);R(4)-R(2)]
         % angle of rotatoin
         th = acos((tau-1)/2);
         % average agular velocity 
@@ -64,6 +64,12 @@ if nargin == 8
         step = p0;
         % direction of linear movemnt
         direction = [u_hat(1:2);0];
+        
+        %% debugging 
+        if isnan(direction(1))
+            puase();
+        end
+        %%
         % linear velocity
         vel = omega*ballsize*direction;
         % vector to skew symmetric matrix
@@ -74,6 +80,8 @@ if nargin == 8
             Rot = Rot*(eye(3)*cos(omega*dt)+u_hat*u_hat'*(1-cos(omega*dt))+u_skew*sin(omega*dt));
             % step forward
             step = step + vel*dt;
+            % Magnetic Field Visualization
+            showmagfield(I0(1),I0(2),I0(3),p0);
             % vsiualization
             plot_ball(ballsize,step,Rot,dt,speed)
 

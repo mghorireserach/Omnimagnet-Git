@@ -7,7 +7,7 @@
 % A. J. Petruska and J. J. Abbott, "Omnimagnet: An Omnidirectional Electromagnet for Controlled Dipole-Field Generation," IEEE Trans. Magnetics, 50(7):8400810(1-10), 2014. 
 % Link: http://www.telerobotics.utah.edu/index.php/Research/Omnimagnets
 
-function [phi, psi, Task] = fwdMagneticField( currx, curry, currz, x, y )
+function [phi, psi, B, Task] = fwdMagneticField( currx, curry, currz, x, y )
 %Print Task Name
 Task = 'Running Find Magnetic Field from Currents';
 %---------------------
@@ -21,7 +21,7 @@ Task = 'Running Find Magnetic Field from Currents';
 %    'curry' 'currz'"
 %
 % EX___
-%   [phi, psi] = fwdMagneticField( 1, 2, 3, 0, 0 )
+%   [phi, psi, B, Task] = fwdMagneticField( 1, 2, 3, 0, 0 )
 % 
 
 %% fwdMagneticField
@@ -41,11 +41,11 @@ if nargin == 5
     if norm(pos)==0
     u  = [0;0;0];
     else
-    p_hat = pos/norm(pos);
+    p_hat = pos/norm(pos)
     % Constant of Permeability
     mu = 4*(10^-7)*pi;
     % Eqn parts for B => I 
-    temp = 2*pi*(norm(pos)^3)*(M\(3*p_hat*(p_hat') - 2*eye(3)))/mu
+    temp = 2*pi*(norm(pos)^3)*(M\(3*p_hat*(p_hat') - 2*eye(3)))/mu;
     % Current Vector
     B = temp\I;
     % Unit Vector in the Direction of B
@@ -58,7 +58,9 @@ if nargin == 5
     psi = atan2(u(3),sqrt(u(2)^2+u(1)^2));
 
 else
-    ERROR = 'Not Enough Input Arguments'
+    ERROR = 'Not Enough Input Arguments';
+    display(ERROR);
+    
 end
 end
 
