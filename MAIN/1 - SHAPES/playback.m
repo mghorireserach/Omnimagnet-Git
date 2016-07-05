@@ -8,7 +8,7 @@
 % A. J. Petruska and J. J. Abbott, "Omnimagnet: An Omnidirectional Electromagnet for Controlled Dipole-Field Generation," IEEE Trans. Magnetics, 50(7):8400810(1-10), 2014. 
 % Link: http://www.telerobotics.utah.edu/index.php/Research/Omnimagnets
 
-function [pf,wRb,Task] = playback(currx,curry,currz,p0, T,dt, speed, ballsize)
+function [pf,wRb,Task] = playback(currx,curry,currz,wHb, T,dt, speed, ballsize)
 %Print Task Name
 Task = 'Running playback';
 %---------------------
@@ -60,8 +60,7 @@ if nargin == 8 ||nargin == 3 ||nargin == 4 ||nargin == 6
     
     % Number of recorded positions
     arraysize = size(currx);
-    % Init rotation matrix
-    wRb = eye(3);
+    
     % Loop through all orientations
     for n = 1:1:arraysize-1
         % Initial position Current 
@@ -69,9 +68,7 @@ if nargin == 8 ||nargin == 3 ||nargin == 4 ||nargin == 6
         % Next position Current
         If = [currx(n+1);curry(n+1);currz(n+1)];
         % Move ball according to current 
-        [ pf, wRb ] = fwdcurrent(I0, If,p0,wRb,T,dt,speed,ballsize);
-        % set next initial position
-        p0 = pf;
+        [ wHb ] = fwdcurrent(I0, If,wHb,T,dt,speed,ballsize);
     end
 
 else

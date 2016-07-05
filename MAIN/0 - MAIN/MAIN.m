@@ -69,14 +69,14 @@ if nargin == 0||nargin == 1||nargin == 6||nargin == 8||nargin == 10
         % assign shapee
         if a==1
             % run rectangular trajectory 
-            [curra, currb, currc,p0] = rollBallInSquare();
+            [curra, currb, currc,wHb] = rollBallInSquare();
             % playback trajectory
-            playback(curra,currb,currc,p0);
+            playback(curra,currb,currc,wHb);
         else
             % run Circle trajectory
-            [curra, currb, currc,p0] = rollBallInCircle();
+            [curra, currb, currc,wHb] = rollBallInCircle();
             % playback trajectory
-            playback(curra,currb,currc,p0);
+            playback(curra,currb,currc,wHb);
         end
     end
 
@@ -85,30 +85,37 @@ if nargin == 0||nargin == 1||nargin == 6||nargin == 8||nargin == 10
     if nargin == 1
         if type==1
             % run rectangle trajectory
-            [curra, currb, currc,p0] = rollBallInSquare();
+            [curra, currb, currc,wHb] = rollBallInSquare();
             % playback trajectory
-            playback(curra,currb,currc,p0);
+            playback(curra,currb,currc,wHb);
         else
             % run circle trajectory
-            [curra, currb, currc,p0] = rollBallInCircle();
+            [curra, currb, currc,wHb] = rollBallInCircle();
             % playback trajectory
-            playback(curra,currb,currc,p0);
+            playback(curra,currb,currc,wHb);
         end
     end
 
     %% 6 Param "Given Path Shape, & Path Parameters"
     % check input 
     if nargin ==6
+        % Init Pos vector
+        p0 = [x0;y0;0];
+        % Init rot vector(rotation in world-z then magnetic-y)
+        R0 = roty(phi)*rotz(psi);
+        % Init Homogeneous Vector
+        wHb =  [R0,p0;0 0 0 1];
+        
         if type==1
             % run rectangle trajectory (specified rectangle)
-            [curra, currb, currc,p0] = rollBallInSquare(x0,y0,phi,psi,ShapeSize);
+            [curra, currb, currc,wHb] = rollBallInSquare(wHb, ShapeSize);
             % playback trajectory
-            playback(curra,currb,currc,p0);
+            playback(curra,currb,currc,wHb);
         else
             % run circle trajectory (specified circle)
-            [curra, currb, currc,p0] = rollBallInCircle(x0,y0,phi,psi,ShapeSize);
+            [curra, currb, currc,wHb] = rollBallInCircle(wHb,ShapeSize);
             % playback trajectory
-            playback(curra,currb,currc,p0);
+            playback(curra,currb,currc,wHb);
         end
     end
     
@@ -116,32 +123,46 @@ if nargin == 0||nargin == 1||nargin == 6||nargin == 8||nargin == 10
     %% 8 Param "Given Path Shape, Path Params, & Time Params"
     % check input 
     if nargin == 8
+        % Init Pos vector
+        p0 = [x0;y0;0];
+        % Init rot vector(rotation in world-z then magnetic-y)
+        R0 = roty(phi)*rotz(psi);
+        % Init Homogeneous Vector
+        wHb =  [R0,p0;0 0 0 1];
+
         if type==1
             % run rectangle trajectory (specified rectangle, Time to complete & time step to reccord)
-            [curra, currb, currc,p0] = rollBallInSquare(x0,y0,phi,psi,ShapeSize,T,dt);
+            [curra, currb, currc,wHb] = rollBallInSquare(wHb,ShapeSize,T,dt);
             % playback trajectory
-            playback(curra,currb,currc,p0,T,dt);
+            playback(curra,currb,currc,wHb,T,dt);
         else
             % run circle trajectory (specified Circle, Time to complete & time step to reccord)
-            [curra, currb, currc,p0] = rollBallInCircle(x0,y0,phi,psi,ShapeSize,T,dt);
+            [curra, currb, currc,wHb] = rollBallInCircle(wHb,ShapeSize,T,dt);
             % playback trajectory
-            playback(curra,currb,currc,p0,T,dt);
+            playback(curra,currb,currc,wHb,T,dt);
         end
     end
 
     %% 10 Param "Given Path Shape, Path Params, & Time Params, Video Params"
     % check input 
     if nargin == 10
+        % Init Pos vector
+        p0 = [x0;y0;0];
+        % Init rot vector(rotation in world-z then magnetic-y)
+        R0 = roty(phi)*rotz(psi);
+        % Init Homogeneous Vector
+        wHb =  [R0,p0;0 0 0 1];
+
         if type==1
             % run rectangle trajectory (specified rectangle, Time to complete & time step to reccord,tool size & speed of video)
-            [curra, currb, currc,p0] = rollBallInSquare(x0,y0,phi,psi,ShapeSize,T,dt,speed,ballsize);
+            [curra, currb, currc,wHb] = rollBallInSquare(wHb,ShapeSize,T,dt,speed,ballsize);
             % playback trajectory
-            playback(curra,currb,currc,p0,T,dt,speed,ballsize);
+            playback(curra,currb,currc,wHb,T,dt,speed,ballsize);
         else
             % run circle trajectory (specified Circle, Time to complete & time step to reccord,tool size & speed of video)
-            [curra, currb, currc,p0] = rollBallInCircle(x0,y0,phi,psi,ShapeSize,T,dt,speed,ballsize);
+            [curra, currb, currc,wHb] = rollBallInCircle(wHb,ShapeSize,T,dt,speed,ballsize);
             % playback trajectory
-            playback(curra,currb,currc,p0,T,dt,speed,ballsize);
+            playback(curra,currb,currc,wHb,T,dt,speed,ballsize);
         end
     end
 

@@ -44,10 +44,16 @@ if nargin == 0||nargin == 5||nargin == 7||nargin == 9
         x0 = 10;
         % init y
         y0 = 0;
+        % Init pos
+        p0 = [x0;y0;0];
         % init latitude
         phi = 0;
         % init longitude
         psi = 0;
+        % Init rot vector(rotation in world-z then magnetic-y)
+        R0 = roty(phi)*rotz(psi);
+        % Init Homgeneous 
+        wHb = [R0,p0;0 0 0 1];
         % radius of circle
         radius = 10;
         % speed of video
@@ -77,6 +83,12 @@ if nargin == 0||nargin == 5||nargin == 7||nargin == 9
         % tool size
         ballsize = 1;
     end
+    % Column of Homogeneous
+        xcol= 0;
+        ycol= 4;
+        zcol= 8;
+        pcol= 12; 
+    % ----------------------
     
     %% rollBallInCircle
     % Initiate current vectors
@@ -84,13 +96,8 @@ if nargin == 0||nargin == 5||nargin == 7||nargin == 9
     currY = [];
     currZ = [];
 
-    % First Orientation
-    wRb = rotz(psi)*roty(phi);
-
     % Angle Step size
     del = 2*pi/(T/dt);
-    % Init pos vector
-    pos1 = [x0;y0;0];
     
     % Full Cirlce
     for Q = 0:del:2*pi
@@ -102,14 +109,12 @@ if nargin == 0||nargin == 5||nargin == 7||nargin == 9
             % add 4 steps between points
             dt = dt/4;
             % Use ballfwd Control
-            [ currx, curry, currz, wRb] = ballfwd(pos1,pos2,wRb,T,dt,speed,ballsize);
+            [ currx, curry, currz, wHb] = ballfwd(wHb,pos2,T,dt,speed,ballsize);
             % Set Required Current Vecotrs 
             currX = [currX;currx];
             currY = [currY;curry];
             currZ = [currZ;currz];
         end
-        % set Old pos
-        pos1 = pos2;
     end
 else
     ERROR = 'Not Enough Input Arguments';

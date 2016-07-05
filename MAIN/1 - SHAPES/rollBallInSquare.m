@@ -6,7 +6,7 @@
 % A. J. Petruska and J. J. Abbott, "Omnimagnet: An Omnidirectional Electromagnet for Controlled Dipole-Field Generation," IEEE Trans. Magnetics, 50(7):8400810(1-10), 2014. 
 % Link: http://www.telerobotics.utah.edu/index.php/Research/Omnimagnets
 
-function [ currX, currY, currZ,p0, Task ] = rollBallInSquare(x0,y0,phi,psi,corner,T,dt,speed,ballsize)
+function [ currX, currY, currZ,wHb, Task ] = rollBallInSquare(wHb,corner,T,dt,speed,ballsize)
 %Print Task Name
 Task = 'Running Roll Ball in Square';
 %---------------------
@@ -45,43 +45,53 @@ if nargin == 0||nargin == 5||nargin == 7||nargin == 9
         x0 = 5;
         % Init y
         y0 = 5;
+        % Init pos
+        p0 = [x0;y0;0];
         % Init latitude
         phi = 0;
         % Init longitude
         psi = 0;
+        % Init rot vector(rotation in world-z then magnetic-y)
+        R0 = roty(phi)*rotz(psi);
+        % Init Homgeneous 
+        wHb = [R0,p0;0 0 0 1];
         % 3rd Corner of the rectangular trajectory 
         corner = [10;10];
         % Time to completion of trajectory
-        T = 1;
+        T = 10;
         % time step at which to reccord
-        dt = 0.01;
+        dt = 0.1;
         % speed of video
         speed = 50;
         % tool size
         ballsize = 1;
     end
 
-    %% 5 Params "Square Dimensions Only Given"
-    if nargin == 5
+    %% 2 Params "Square Dimensions Only Given"
+    if nargin == 2
         %  Time  t completion of trajectory
-        T = 1;
+        T = 10;
         % time step at which to reccord
-        dt = 0.01;
+        dt = 0.1;
         % speed of video
         speed = 10;
         % tool size
         ballsize = 1;    
     end
 
-    %% 7 params "Size of Ball & Video Speed Unknown"
-    if nargin == 7
+    %% 4 params "Size of Ball & Video Speed Unknown"
+    if nargin == 4
         % speed of video
         speed = 1;
         % size of tool 
         ballsize = 1;
     end
-    % Init pos vector from
-    p0 = [x0;y0;0];
+    % Column of Homogeneous
+        xcol= 0;
+        ycol= 4;
+        zcol= 8;
+        pcol= 12; 
+    % ----------------------
     
     %% rollBallInSquare
     %  --------
@@ -90,8 +100,8 @@ if nargin == 0||nargin == 5||nargin == 7||nargin == 9
     %  --------
     %     L
     % Length and Width of the "Square"
-    L = abs(x0-corner(1));
-    W = abs(y0-corner(2));
+    L = abs(wHb(pcol+1)-corner(1));
+    W = abs(wHb(pcol+2)-corner(2));
 
     % Time per Meter 
     %for a constant velocity accross each leg
@@ -106,39 +116,36 @@ if nargin == 0||nargin == 5||nargin == 7||nargin == 9
     currY = [];
     currZ = [];
 
-    % First Orientation
-    wRb = rotz(psi)*roty(phi);
-
     % Four Corners of Rectangle
-    corners = [x0 y0 0; corner(1) y0 0;corner(1) corner(2) 0; x0 corner(2) 0];
+    corners = [wHb(pcol+1) wHb(pcol+2) 0; corner(1) wHb(pcol+2) 0;corner(1) corner(2) 0; wHb(pcol+1) corner(2) 0];
 
 
     %% Rolling Ball in Square
 
     % First Leg
     % Use ballfwd Control
-    [ currx, curry, currz, wRb] = ballfwd(corners(1,:)',corners(2,:)',wRb,TL,dt,speed,ballsize);
+    [ currx, curry, currz, wHb] = ballfwd(wHb,corners(2,:)',TL,dt,speed,ballsize);
     % Set Required Current Vecotrs 
     currX = [currX;currx];
     currY = [currY;curry];
     currZ = [currZ;currz];
     %}
     % Second Leg
-    [ currx, curry, currz, wRb] = ballfwd(corners(2,:)',corners(3,:)',wRb,TW,dt,speed,ballsize);
+    [ currx, curry, currz, wHb] = ballfwd(wHb,corners(3,:)',TW,dt,speed,ballsize);
     % Set Required Current Vecotrs
     currX = [currX;currx];
     currY = [currY;curry];
     currZ = [currZ;currz];
 
     % Third Leg
-    [ currx, curry, currz, wRb] = ballfwd(corners(3,:)',corners(4,:)',wRb,TL,dt,speed,ballsize);
+    [ currx, curry, currz, wHb] = ballfwd(wHb,corners(4,:)',TL,dt,speed,ballsize);
     % Set Required Current Vecotrs
     currX = [currX;currx];
     currY = [currY;curry];
     currZ = [currZ;currz];
 
     % Fourth Leg
-    [ currx, curry, currz] = ballfwd(corners(4,:)',corners(1,:)',wRb,TW,dt,speed,ballsize);
+    [ currx, curry, currz] = ballfwd(wHb,corners(1,:)',TW,dt,speed,ballsize);
     % Set Required Current Vecotrs
     currX = [currX;currx];
     currY = [currY;curry];

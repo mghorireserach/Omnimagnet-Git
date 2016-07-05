@@ -115,8 +115,8 @@ if nargin == 6
             % Transformation
             %  Rotation
             Htrans = Htrans*[roty(omegay*dt),[0;0;0];0 0 0 1];
-            %  Translation
-            Htrans(pcol+1:15) = Htrans(pcol+1:15)' + vel*direction*dt
+            %  Tr
+            Htrans(pcol+1:15) = Htrans(pcol+1:15)+ vel*direction*dt
             % Visualization Function of ball after Rotation
             plot_ball(ballsize,Htrans,dt,speed);
             % Find the Neccessary Current and add it to current set 
@@ -134,9 +134,7 @@ if nargin == 6
         end
 
         % Pre multiply rotation for fixed frame
-        wHb= wHb*[roty(gama),[0;0;0];0 0 0 1];
-        %  Translation
-        wHb(pcol+1:15) = p2;
+        wHb = wHb*[roty(gama),p2;0 0 0 1];
         % Visualization Function of ball after Rotation 
         plot_ball(ballsize,wHb,0,speed)
         % Find the Neccessary Current and add it to current set 
