@@ -31,9 +31,9 @@ Task = 'Running Move Ball Fwd';
 if nargin == 6
     
     % Column of Homogeneous
-        xcol= 0;
+        %xcol= 0;
         ycol= 4;
-        zcol= 8;
+        %zcol= 8;
         pcol= 12; 
     % ----------------------
     
@@ -50,7 +50,7 @@ if nargin == 6
     % direction vector from p1 to p2 in world
     direction = (p2-wHb(pcol+1:15)')/norm(p2-wHb(pcol+1:15)');
     % unit vector of Magnetic-Field y-axis in world x-y-plane
-    yaxis = [wHb(ycol+1:ycol+3)';0];
+    yaxis = wHb(ycol+1:ycol+3)'
     % Angle Between Magnetic-Field y-axis and vector pointing to next position
     theta = (pi/2 - anglediff(direction,yaxis));
     % For no rotation needed EXCEPTION
@@ -70,7 +70,7 @@ if nargin == 6
             % Rotation
             Rrot = rotz(omegaz*dt);
             % Convert Rrot to Homegeneous Matrix
-            Hrot = Hrot*[Rrot,[0;0;0];0 0 0 1];
+            Hrot(1:3,1:3) = Rrot*Hrot(1:3,1:3)%[Rrot',[0;0;0];0 0 0 1];
             % Visualization Function of ball after Rotation
             plot_ball(ballsize,Hrot,dt,speed);
             % Find the Neccessary Current and add it to current set 
@@ -86,7 +86,7 @@ if nargin == 6
         end
 
         % Pre multiply rotation for fixed frame
-        wHb = wHb*[rotz(theta),[0;0;0];0 0 0 1];
+        wHb(1:3,1:3) = rotz(theta)*wHb(1:3,1:3)%[rotz(theta)',[0;0;0];0 0 0 1];
         % Visualization Function of ball after Rotation 
         plot_ball(ballsize,wHb,0,speed);
         % Find the Neccessary Current and add it to current set 
@@ -116,7 +116,7 @@ if nargin == 6
             %  Rotation
             Htrans = Htrans*[roty(omegay*dt),[0;0;0];0 0 0 1];
             %  Translation
-            Htrans(pcol+1:15) = Htrans(pcol+1:15)' + vel*direction*dt
+            Htrans(pcol+1:15) = Htrans(pcol+1:15)' + vel*direction*dt;
             % Visualization Function of ball after Rotation
             plot_ball(ballsize,Htrans,dt,speed);
             % Find the Neccessary Current and add it to current set 

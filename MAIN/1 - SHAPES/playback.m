@@ -8,7 +8,7 @@
 % A. J. Petruska and J. J. Abbott, "Omnimagnet: An Omnidirectional Electromagnet for Controlled Dipole-Field Generation," IEEE Trans. Magnetics, 50(7):8400810(1-10), 2014. 
 % Link: http://www.telerobotics.utah.edu/index.php/Research/Omnimagnets
 
-function [pf,wRb,Task] = playback(currx,curry,currz,wHb, T,dt, speed, ballsize)
+function [wHb,Task] = playback(currx,curry,currz,wHb, T,dt, speed, ballsize)
 %Print Task Name
 Task = 'Running playback';
 %---------------------
@@ -35,7 +35,13 @@ Task = 'Running playback';
 % EX___  
 %   playback([0;0;0],1,2,3,10,0.1,1,1);
 %
-
+% Column of Homogeneous
+        xcol= 0;
+        ycol= 4;
+        zcol= 8;
+        pcol= 12; 
+    % ----------------------
+    
 %% playback
 % Enough Inputs EXCEPTION
 if nargin == 8 ||nargin == 3 ||nargin == 4 ||nargin == 6

@@ -7,7 +7,7 @@
 % A. J. Petruska and J. J. Abbott, "Omnimagnet: An Omnidirectional Electromagnet for Controlled Dipole-Field Generation," IEEE Trans. Magnetics, 50(7):8400810(1-10), 2014. 
 % Link: http://www.telerobotics.utah.edu/index.php/Research/Omnimagnets
 
-function [ pf, wRb, Task] = fwdcurrent(I0, If,p0,wRb,T,dt,speed,ballsize)
+function [ wHb, Task] = fwdcurrent(I0, If,wHb,T,dt,speed,ballsize)
 %Print Task Name
 Task = 'Running Current to Step';
 %---------------------
@@ -28,70 +28,78 @@ Task = 'Running Current to Step';
 % EX___
 %   [ pf, wRb ] = fwdcurrent([1;2;3], [4;;6],[0;0;0],eye(3),10,0.1,1,1)
 %   
+% Column of Homogeneous
+        %xcol= 0;
+        %ycol= 4;
+        %zcol= 8;
+        pcol= 12; 
+    % ----------------------
+    
 %% fwdcurrent
 % Enough Inputs EXCEPTION
-if nargin == 8
+if nargin == 7
         %% Find Rotation
         % Initial Orientation
-        [phi1, psi1] = fwdMagneticField( I0(1), I0(2), I0(3), p0(1), p0(2) );
+        [phi1, psi1] = fwdMagneticField( I0(1), I0(2), I0(3), wHb(pcol+1), wHb(pcol+2) );
         % Final Orientation
-        [phi2, psi2] = fwdMagneticField( If(1), If(2), If(3), p0(1), p0(2) );
+        [phi2, psi2] = fwdMagneticField( If(1), If(2), If(3), wHb(pcol+1), wHb(pcol+2)  );
         % Rotation about world-z-axis
-        psi = psi2 -psi1
+        psi = psi2 -psi1;
         % Rotation about world-y-axis (negativd phi2 due to backward rotation)
-        phi = -phi2+phi1
+        phi = phi2-phi1;
     % If there is no change in orientation
     if phi==0 && psi == 0
-        pf = p0;
-        %wRb = wRb;
     else
         %% Single Angle Rotation
         % Current Rotation Matrix
-        R = rotz(psi)*roty(phi)
+        R = rotz(psi)*roty(phi);
         % Trace of current rotation matrix from magent-field to world
-        tau = trace(R)
+        tau = trace(R);
         % Unit vector of axis of rotation
-        u_hat = (1/sqrt((1+tau)*(3-tau)))*[R(6)-R(8);R(7)-R(3);R(4)-R(2)]
+        u_hat = (1/sqrt((1+tau)*(3-tau)))*[R(6)-R(8);R(7)-R(3);R(4)-R(2)];
         % angle of rotatoin
         th = acos((tau-1)/2);
         % average agular velocity 
         omega = th/T;
         % Number of steps to show in visual
         reps = floor(T/dt);
-        % set current orienttation
-        Rot = wRb;
         % set current position
-        step = p0;
+        step = wHb(pcol+1:15)';
         % direction of linear movemnt
         direction = [u_hat(1:2);0];
+        % vector to skew symmetric matrix
+        u_skew = vect2skew(u_hat);
+        % Use rodruigez formula to rotate about singular axis
+        Rot = (eye(3)*cos(omega*dt)+u_hat*u_hat'*(1-cos(omega*dt))+u_skew*sin(omega*dt));
+        % Set Current Homogeneous Matrix
+        Hcurr = wHb;  
+        % linear velocity
+        vel = omega*ballsize*direction;
         
         %% debugging 
         if isnan(direction(1))
             puase();
         end
         %%
-        % linear velocity
-        vel = omega*ballsize*direction;
-        % vector to skew symmetric matrix
-        u_skew = vect2skew(u_hat);
         
         for n = 1:reps
-            % Use rodruigez formula to rotate about singular axis
-            Rot = Rot*(eye(3)*cos(omega*dt)+u_hat*u_hat'*(1-cos(omega*dt))+u_skew*sin(omega*dt));
             % step forward
             step = step + vel*dt;
+            Hcurr(pcol+1:15) = step;
+            Hcurr = Hcurr*[Rot,[0 0 0]';0 0 0 1];
             % Magnetic Field Visualization
-            showmagfield(I0(1),I0(2),I0(3),p0);
+            showmagfield(I0(1),I0(2),I0(3),wHb(pcol+1:15)');
             % vsiualization
-            plot_ball(ballsize,step,Rot,dt,speed)
+            plot_ball(ballsize,Hcurr,dt,speed)
 
         end
             % Resultant Orientation
-            wRb = wRb*(eye(3)*cos(th)+u_hat*u_hat'*(1-cos(th))+u_skew*sin(th));
+            Rot = (eye(3)*cos(th)+u_hat*u_hat'*(1-cos(th))+u_skew*sin(th));
             % Resultant Pos
-            pf = p0 + vel*T;
+            wHb(pcol+1:15) = wHb(pcol+1:15)' + vel*T;
+            wHb = wHb*[Rot,[0 0 0]';0 0 0 1];
             % visualization
-            plot_ball(ballsize,pf,wRb,dt,speed)
+            plot_ball(ballsize,wHb,dt,speed)
     end
     
 else

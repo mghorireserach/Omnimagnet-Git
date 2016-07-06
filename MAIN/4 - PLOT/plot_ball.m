@@ -19,9 +19,9 @@ Task = 'Running Plot Magnet Ball';
 %---------------------
 persistent I s
 % Column of Homogeneous
-        xcol= 0;
-        ycol= 4;
-        zcol= 8;
+        %xcol= 0;
+        %ycol= 4;
+        %zcol= 8;
         pcol= 12; 
     % ----------------------
     
@@ -87,7 +87,7 @@ end
     
     [Cx,Cy,Cz] = cylinder(1);
     Cz = 2*Cz+s/2-1;
-    MAT = [Cx; Cy; Cz]; 
+    %MAT = [Cx; Cy; Cz]; 
     I = imread('capture.png');
     Cil(3) = warp(Cx,Cy,Cz,I);
     
@@ -105,15 +105,15 @@ end
     % Axis Vectors
     Arr(7:9)= [0 0 5*ballsize]; %4*ballsize*H(zcol+1:zcol+3);
     Arr(4:6)= [0 2*ballsize 0];%2*ballsize*H(ycol+1:ycol+3);
-    Arr(1:3)= [ballsize 0 0];%2*ballsize*H(xcol+1:xcol+3);
+    Arr(1:3)= [  ballsize 0 0];%2*ballsize*H(xcol+1:xcol+3);
     % Axis Center
-    pos = [0 0 0] %H(pcol+1:15)';
+    pos = [0 0 0]; %H(pcol+1:15)';
     % Draw z-Arrow
-    S(2) = quiver3(pos(1),pos(2),pos(3)+ballsize,Arr(7),Arr(8),Arr(9));
+    S(2) = quiver3(pos(1),pos(2),pos(3),Arr(7), Arr(8),Arr(9));
     % Draw y-Arrow
-    S(3) =  quiver3(pos(1),pos(2),pos(3)+ballsize,Arr(4),Arr(5),Arr(6));
+    S(3) =  quiver3(pos(1),pos(2),pos(3),Arr(4),Arr(5),Arr(6));
     % Draw x-Arrow
-    S(4) = quiver3(pos(1),pos(2),pos(3)+ballsize,Arr(1),Arr(2),Arr(3));
+    S(4) = quiver3(pos(1),pos(2),pos(3),Arr(1),Arr(2),Arr(3));
     % Construct Transform Object
     s = hgtransform;
     % Set Transform Object as parent
@@ -126,22 +126,7 @@ else
     set(s,'Matrix',H);
     % Show in Figure
     drawnow
-    %{
-    %% Draw Arrow Pointing North(magnet-Z-Axis) & AxisOfRolling(magnet-Y-Axis)
-    % Axis Vectors
-    R(7:9)= 4*ballsize*H(zcol+1:zcol+3);
-    R(4:6)= 2*ballsize*H(ycol+1:ycol+3);
-    R(1:3)= 2*ballsize*H(xcol+1:xcol+3);
-    % Axis Center
-    pos = H(pcol+1:15)';
-    % Draw z-Arrow
-    h(1) = quiver3(pos(1),pos(2),pos(3)+ballsize,R(7),R(8),R(9));
-    % Draw y-Arrow
-    h(2) =  quiver3(pos(1),pos(2),pos(3)+ballsize,R(4),R(5),R(6));
-    % Draw x-Arrow
-    h(3) = quiver3(pos(1),pos(2),pos(3)+ballsize,R(1),R(2),R(3));
     
-    %}
     %% sets time delay "causes warning in first run"
     pause(dt/speed);
     
