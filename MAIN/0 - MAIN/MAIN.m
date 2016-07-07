@@ -87,7 +87,11 @@ if nargin == 0||nargin == 1||nargin == 6||nargin == 8||nargin == 10
             % run rectangle trajectory
             [curra, currb, currc,wHb] = rollBallInSquare();
             % playback trajectory
-            playback(curra,currb,currc,wHb);
+            prompt = 'Run playback?\n 1-Yes or 0-No\n Then Press Enter';
+            prompt = input(prompt)==1;
+            if prompt ==1
+                playback(curra,currb,currc,wHb);
+            end
         else
             % run circle trajectory
             [curra, currb, currc,wHb] = rollBallInCircle();
@@ -166,7 +170,7 @@ if nargin == 0||nargin == 1||nargin == 6||nargin == 8||nargin == 10
         end
     end
 
-    
+if prompt ==1
 %% Write Solenoid-Current Values to MS-Excel File    
 % create File
 filename = 'currentdata.xlsx';
@@ -176,7 +180,17 @@ xlswrite(filename,curra,'currx','A1');
 xlswrite(filename,currb,'curry','A1');
 % write currc (Outer solenoid)
 xlswrite(filename,currc,'currz','A1');
-
+end 
+% delete window
+Q = 0;
+while Q == 0
+    prompt = 'Close this Figure?\n 1-Yes or 0-No';
+Q = input(prompt);
+% Cleaning Data 
+clear;
+clc;
+end
+close all;
 else
     ERROR = 'Not Enough Input Arguments';
     display(ERROR);

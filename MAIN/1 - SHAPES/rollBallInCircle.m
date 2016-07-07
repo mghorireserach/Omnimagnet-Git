@@ -6,7 +6,7 @@
 % A. J. Petruska and J. J. Abbott, "Omnimagnet: An Omnidirectional Electromagnet for Controlled Dipole-Field Generation," IEEE Trans. Magnetics, 50(7):8400810(1-10), 2014. 
 % Link: http://www.telerobotics.utah.edu/index.php/Research/Omnimagnets
 
-function [ currX, currY, currZ ,Task] = rollBallInCircle(x0,y0,phi,psi,radius,T,dt,speed,ballsize)
+function [ currX, currY, currZ ,Task] = rollBallInCircle(wHb,radius,T,dt,speed,ballsize)
 %Print Task Name
 Task = 'Running Roll Ball in Circle';
 %---------------------
@@ -84,9 +84,9 @@ if nargin == 0||nargin == 5||nargin == 7||nargin == 9
         ballsize = 1;
     end
     % Column of Homogeneous
-        xcol= 0;
-        ycol= 4;
-        zcol= 8;
+        %xcol= 0;
+        %ycol= 4;
+        %zcol= 8;
         pcol= 12; 
     % ----------------------
     
@@ -103,7 +103,7 @@ if nargin == 0||nargin == 5||nargin == 7||nargin == 9
     for Q = 0:del:2*pi
         % Pos current
         pos2 = [radius*cos(Q);radius*sin(Q);0];
-        if isnan(pos1)==0
+        if isnan(wHb(pcol+1:15))==0
             % Time to completion point to point movement
             T = dt;
             % add 4 steps between points

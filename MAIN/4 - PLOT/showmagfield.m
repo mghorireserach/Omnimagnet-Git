@@ -8,7 +8,7 @@
 %% NOTE: NOT TESTED TO WORK
 function [ Task ] = showmagfield( currx,curry,currz,p0)
 %Print Task Name
-Task = 'Running Show Magnetic Field'
+Task = 'Running Show Magnetic Field';
 %---------------------
 % INSTRUCTIONS
 %{
@@ -25,14 +25,14 @@ Task = 'Running Show Magnetic Field'
 % Enough Inputs EXCEPTION
 if nargin == 4
     % Step size between quivers
-    delp = 1; 
+    delp = 10; 
     % Initialize posB (Position of Quiver)
     posB(1,:) = p0;
     direction = zeros(1000,3);
     % Draw 200 quivers to outline magnetic field lines
-    for n = 0:2000
+    for n = 0:1000
         % Magnetic Field Value at position
-        [phi,psi,B] = fwdMagneticField(currx,curry,currz,posB(1),posB(2));
+        [~,~,B] = fwdMagneticField(currx,curry,currz,posB(n+1,1),posB(n+1,2));
         % Orientation Matrix
         %R = rotz(psi)*roty(phi);
         % Direction of Magnetic Field line
@@ -44,7 +44,7 @@ if nargin == 4
     % Draw arrow tangent to magnetic field line
     size(direction)
     size(posB)
-        quiv = quiver3(direction(:,1),direction(:,2),direction(:,3),posB(1:1001,1),posB(1:1001,2),posB(1:1001,3));
+        quiv = quiver3(posB(1:1001,1),posB(1:1001,2),posB(1:1001,3),direction(:,1),direction(:,2),direction(:,3));
         hold on
         pause();
         delete(quiv);
@@ -53,3 +53,4 @@ else
     display(ERROR);
 end
 end
+

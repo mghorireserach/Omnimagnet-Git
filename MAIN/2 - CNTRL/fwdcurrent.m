@@ -40,13 +40,13 @@ Task = 'Running Current to Step';
 if nargin == 7
         %% Find Rotation
         % Initial Orientation
-        [phi1, psi1] = fwdMagneticField( I0(1), I0(2), I0(3), wHb(pcol+1), wHb(pcol+2) );
+        [phi1, psi1] = fwdMagneticField( I0(1), I0(2), I0(3), wHb(pcol+1), wHb(pcol+2));
         % Final Orientation
-        [phi2, psi2] = fwdMagneticField( If(1), If(2), If(3), wHb(pcol+1), wHb(pcol+2)  );
+        [phi2, psi2] = fwdMagneticField( If(1), If(2), If(3), wHb(pcol+1), wHb(pcol+2));
         % Rotation about world-z-axis
         psi = psi2 -psi1;
         % Rotation about world-y-axis (negativd phi2 due to backward rotation)
-        phi = phi2-phi1;
+        phi = -phi2+phi1;
     % If there is no change in orientation
     if phi==0 && psi == 0
     else
@@ -78,7 +78,7 @@ if nargin == 7
         
         %% debugging 
         if isnan(direction(1))
-            puase();
+            %puase();
         end
         %%
         
@@ -86,18 +86,18 @@ if nargin == 7
             % step forward
             step = step + vel*dt;
             Hcurr(pcol+1:15) = step;
-            Hcurr = Hcurr*[Rot,[0 0 0]';0 0 0 1];
-            % Magnetic Field Visualization
-            showmagfield(I0(1),I0(2),I0(3),wHb(pcol+1:15)');
+            Hcurr(1:3,1:3) = Hcurr(1:3,1:3)*Rot;
             % vsiualization
             plot_ball(ballsize,Hcurr,dt,speed)
-
+            % Magnetic Field Visualization
+            showmagfield(I0(1),I0(2),I0(3),wHb(pcol+1:15)');
+            
         end
             % Resultant Orientation
             Rot = (eye(3)*cos(th)+u_hat*u_hat'*(1-cos(th))+u_skew*sin(th));
             % Resultant Pos
             wHb(pcol+1:15) = wHb(pcol+1:15)' + vel*T;
-            wHb = wHb*[Rot,[0 0 0]';0 0 0 1];
+            wHb(1:3,1:3) = wHb(1:3,1:3)*Rot;
             % visualization
             plot_ball(ballsize,wHb,dt,speed)
     end

@@ -41,7 +41,7 @@ if nargin == 5
     if norm(pos)==0
     u  = [0;0;0];
     else
-    p_hat = pos/norm(pos)
+    p_hat = pos/norm(pos);
     % Constant of Permeability
     mu = 4*(10^-7)*pi;
     % Eqn parts for B => I 

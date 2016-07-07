@@ -88,9 +88,9 @@ if nargin == 0||nargin == 5||nargin == 7||nargin == 9
     end
 
     % Column of Homogeneous
-        xcol= 0;
-        ycol= 4;
-        zcol= 8;
+        %xcol= 0;
+        %ycol= 4;
+        %zcol= 8;
         pcol= 12; 
     % ----------------------
     

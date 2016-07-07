@@ -17,7 +17,8 @@ function [Task] = plot_ball(ballsize,H,dt,speed)
 %Print Task Name
 Task = 'Running Plot Magnet Ball';
 %---------------------
-persistent I s
+format compact
+persistent I cylshift s cyl
 % Column of Homogeneous
         %xcol= 0;
         %ycol= 4;
@@ -33,9 +34,9 @@ if nargin ==1
     axis equal;
     % Set the viewing volume
     % height : ensures ample height to see whole picture
-    height = ballsize*5;
+    height = ballsize*3;
     % -x x -y y -z z step
-    axis([-20 20 -20 20 -height 20])
+    axis([-20 20 -20 20 -height 5])
     % Set the viewing angle
     view(-135, 40)
     % Label the axes.
@@ -49,21 +50,21 @@ if nargin ==1
     hold on
     
 %% Omnimagnet Representation  Credit: Husam Aldahiyat Date 5 Sep, 2008 13:44:02 
-    s=4;
+    q=4;
     x=[-1 1  1 -1 -1 -1;...
         1 1 -1 -1  1  1;...
         1 1 -1 -1  1  1;...
-       -1 1  1 -1 -1 -1]*s/2;
+       -1 1  1 -1 -1 -1]*q/2;
     
     y=[-1 -1 1  1 -1 -1;...
        -1  1 1 -1 -1 -1;...
        -1  1 1 -1  1  1;...
-       -1 -1 1  1  1  1]*s/2;
+       -1 -1 1  1  1  1]*q/2;
     
    z=[0 0 0 0 0 1;...
       0 0 0 0 0 1;...
       1 1 1 1 0 1;...
-      1 1 1 1 0 1]*s;
+      1 1 1 1 0 1]*q;
 for i=1:6
     h=patch(x(:,i),y(:,i),z(:,i),'k');
     set(h,'edgecolor','r')
@@ -71,25 +72,31 @@ for i=1:6
 end
 
 %% Cylinder
+cylshift = q/2;
     %Top of cylinder magnet
     x = 0:0.001:2*pi;
     Tx = cos(x);
     Ty = sin(x);
     sizex = size(x);
-    Tz = 2*ones(sizex(2),1)+s/2-1;
+    Tz = 2*ones(sizex(2),1)-1;
     Cil(2) = fill3(Tx,Ty,Tz,'r');
     
     Bx = cos(x);
     By = sin(x);
     sizex = size(x);
-    Bz = zeros(sizex(2),1)+s/2-1;
+    Bz = zeros(sizex(2),1)-1;
     Cil(1) = fill3(Bx,By,Bz,'b');
     
     [Cx,Cy,Cz] = cylinder(1);
-    Cz = 2*Cz+s/2-1;
+    Cz = 2*Cz-1;
     %MAT = [Cx; Cy; Cz]; 
     I = imread('capture.png');
     Cil(3) = warp(Cx,Cy,Cz,I);
+    % Construct Transform Object
+    cyl = hgtransform;
+    % Set Transform Object as parent
+    set(Cil,'Parent',cyl);
+    
     
     %% Draw Sphere
     [x,y,z] = sphere;   
@@ -100,7 +107,7 @@ end
     z = ballsize*z;
     % Map Image
     S(1) = warp(x,y,z,I);
-    alpha(S(1),0.2)
+    alpha(S(1),0.5)
     %% Draw Arrow Pointing North(magnet-Z-Axis) & AxisOfRolling(magnet-Y-Axis)
     % Axis Vectors
     Arr(7:9)= [0 0 5*ballsize]; %4*ballsize*H(zcol+1:zcol+3);
@@ -124,6 +131,7 @@ else
     %% Draw Sphere
     % Apply transformation
     set(s,'Matrix',H);
+    set(cyl,'Matrix',[H(1:3,1:3),[0 0 cylshift]';0 0 0 1]);
     % Show in Figure
     drawnow
     
