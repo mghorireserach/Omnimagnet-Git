@@ -18,7 +18,7 @@ function [Task] = plot_ball(ballsize,H,dt,speed)
 Task = 'Running Plot Magnet Ball';
 %---------------------
 format compact
-persistent I cylshift s cyl
+persistent cylshift s cyl
 % Column of Homogeneous
         %xcol= 0;
         %ycol= 4;
@@ -79,19 +79,20 @@ cylshift = q/2;
     Ty = sin(x);
     sizex = size(x);
     Tz = 2*ones(sizex(2),1)-1;
-    Cil(2) = fill3(Tx,Ty,Tz,'r');
+    Cil(2) = fill3(Tx,Ty,Tz,'b');
     
     Bx = cos(x);
     By = sin(x);
     sizex = size(x);
     Bz = zeros(sizex(2),1)-1;
-    Cil(1) = fill3(Bx,By,Bz,'b');
+    Cil(1) = fill3(Bx,By,Bz,'r');
     
     [Cx,Cy,Cz] = cylinder(1);
     Cz = 2*Cz-1;
     %MAT = [Cx; Cy; Cz]; 
     I = imread('capture.png');
-    Cil(3) = warp(Cx,Cy,Cz,I);
+    %P = imread('poke.png');
+    Cil(3) = warp(Cx,Cy,-Cz,I);
     % Construct Transform Object
     cyl = hgtransform;
     % Set Transform Object as parent
@@ -107,7 +108,7 @@ cylshift = q/2;
     z = ballsize*z;
     % Map Image
     S(1) = warp(x,y,z,I);
-    alpha(S(1),0.5)
+    alpha(S(1),0.9)
     %% Draw Arrow Pointing North(magnet-Z-Axis) & AxisOfRolling(magnet-Y-Axis)
     % Axis Vectors
     Arr(7:9)= [0 0 5*ballsize]; %4*ballsize*H(zcol+1:zcol+3);
@@ -130,6 +131,7 @@ cylshift = q/2;
 else
     %% Draw Sphere
     % Apply transformation
+    H
     set(s,'Matrix',H);
     set(cyl,'Matrix',[H(1:3,1:3),[0 0 cylshift]';0 0 0 1]);
     % Show in Figure

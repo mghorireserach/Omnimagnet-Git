@@ -54,8 +54,14 @@ if nargin == 5
     %% Output 
     % Angle from the world-x-axis to B in world-x-z-plane
     phi = atan2(u(2),u(1));
+    if phi<0
+        phi = phi+2*pi;
+    end
     % Angle from world-x-axis to B in world-x-y-plane
     psi = atan2(u(3),sqrt(u(2)^2+u(1)^2));
+    if psi<0
+        psi = psi +2*pi;
+    end
 
 else
     ERROR = 'Not Enough Input Arguments';

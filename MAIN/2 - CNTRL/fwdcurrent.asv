@@ -74,20 +74,15 @@ if nargin == 7
         % set current position
         step = wHb(pcol+1:15)';
         % direction of linear movemnt
-        direction = [u_hat(1:2);0];
+        direction = [u_hat(1:2);0]
         direcangle = atan2(direction(1),direction(2));
-        theta = pi/2-direcangle;
+        theta = pi/2-direcangle
         % vector to skew symmetric matrix
         u_skew = vect2skew(u_hat);
         % Use rodruigez formula to rotate about singular axis
         Rot = (eye(3)*cos(omega*dt)+u_hat*u_hat'*(1-cos(omega*dt))+u_skew*sin(omega*dt));
         % Set Current Homogeneous Matrix
-        if isnan(wHb(1))
-            R1= rotz(psi1)*rotx(phi1);
-            Hcurr = [R1,wHb(pcol+1:15)'; 0 0 0 1];
-        else
-            Hcurr = wHb;  
-        end
+        Hcurr = wHb;  
         % linear velocity
         vel = omega*ballsize*[cos(theta);sin(theta);0];
         
@@ -103,13 +98,13 @@ if nargin == 7
             Hcurr(pcol+1:15) = step;
             Hcurr(1:3,1:3) = Hcurr(1:3,1:3)*Rot;
             % vsiualization
-            plot_ball(ballsize,Hcurr,dt,speed);
+            plot_ball(ballsize,Hcurr,dt,speed)
             % Magnetic Field Visualization
             showmagfield(I0(1),I0(2),I0(3),wHb(pcol+1:15)');
             
         end
             % Resultant Orientation
-            Rot = (eye(3)*cos(th)+u_hat*u_hat'*(1-cos(th))+u_skew*sin(th))
+            Rot = (eye(3)*cos(th)+u_hat*u_hat'*(1-cos(th))+u_skew*sin(th));
             % Resultant Pos
             wHb(pcol+1:15) = wHb(pcol+1:15)' + vel*T;
             wHb(1:3,1:3) = wHb(1:3,1:3)*Rot;

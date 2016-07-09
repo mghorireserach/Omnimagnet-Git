@@ -49,9 +49,8 @@ format compact
 %% MAIN
 % Enough Inputs EXCEPTION
 if nargin == 0||nargin == 1||nargin == 6||nargin == 8||nargin == 10
-    prompt = 'Close Old Figure?\n 1-Yes or 0-No\n';
-    Q = input(prompt);
-    if Q==1
+    prompt = 'close old figure'
+    if input(prompt)==1
     % Close Previous figures 
     close all;
     end
@@ -190,7 +189,7 @@ end
 % delete window
 Q = 0;
 while Q == 0
-    prompt = 'Close this Figure?\n 1-Yes or 0-No\n';
+    prompt = 'Close this Figure?\n 1-Yes or 0-No';
 Q = input(prompt);
 close all;
 end

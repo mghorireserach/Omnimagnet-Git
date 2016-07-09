@@ -46,7 +46,7 @@ if nargin == 4
     size(posB)
         quiv = quiver3(posB(1:1001,1),posB(1:1001,2),posB(1:1001,3),direction(:,1),direction(:,2),direction(:,3));
         hold on
-        pause();
+        pause(0.2)
         delete(quiv);
 else
     ERROR = 'Not Enough Input Arguments';
