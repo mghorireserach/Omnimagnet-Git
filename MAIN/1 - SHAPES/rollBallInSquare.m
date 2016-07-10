@@ -6,7 +6,7 @@
 % A. J. Petruska and J. J. Abbott, "Omnimagnet: An Omnidirectional Electromagnet for Controlled Dipole-Field Generation," IEEE Trans. Magnetics, 50(7):8400810(1-10), 2014. 
 % Link: http://www.telerobotics.utah.edu/index.php/Research/Omnimagnets
 
-function [ currX, currY, currZ,wHb, Task ] = rollBallInSquare(wHb,corner,T,dt,speed,ballsize)
+function [ curra, currb, currc,wHb, Task ] = rollBallInSquare(wHb,corner,T,dt,speed,ballsize)
 %Print Task Name
 Task = 'Running Roll Ball in Square';
 %---------------------
@@ -113,9 +113,9 @@ if nargin == 0||nargin == 5||nargin == 7||nargin == 9
     TL = delT*L;
 
     % Initialize Currents
-    currX = [];
-    currY = [];
-    currZ = [];
+    curra = [];
+    currb = [];
+    currc = [];
 
     % Four Corners of Rectangle
     corners = [wHb(pcol+1) wHb(pcol+2) 0; corner(1) wHb(pcol+2) 0;corner(1) corner(2) 0; wHb(pcol+1) corner(2) 0];
@@ -125,32 +125,32 @@ if nargin == 0||nargin == 5||nargin == 7||nargin == 9
 
     % First Leg
     % Use ballfwd Control
-    [ currx, curry, currz, wHb] = ballfwd(wHb,corners(2,:)',TL,dt,speed,ballsize);
+    [ currX, currY, currZ, wHb] = ballfwd(wHb,corners(2,:)',TL,dt,speed,ballsize);
     % Set Required Current Vecotrs 
-    currX = [currX;currx];
-    currY = [currY;curry];
-    currZ = [currZ;currz];
+    curra = [curra;currX];
+    currb = [currb;currY];
+    currc = [currc;currZ];
     %}
     % Second Leg
-    [ currx, curry, currz, wHb] = ballfwd(wHb,corners(3,:)',TW,dt,speed,ballsize);
+    [ currX, currY, currZ, wHb] = ballfwd(wHb,corners(3,:)',TW,dt,speed,ballsize);
     % Set Required Current Vecotrs
-    currX = [currX;currx];
-    currY = [currY;curry];
-    currZ = [currZ;currz];
+    curra = [curra;currX];
+    currb = [currb;currY];
+    currc = [currc;currZ];
 
     % Third Leg
-    [ currx, curry, currz, wHb] = ballfwd(wHb,corners(4,:)',TL,dt,speed,ballsize);
+    [ currX, currY, currZ, wHb] = ballfwd(wHb,corners(4,:)',TL,dt,speed,ballsize);
     % Set Required Current Vecotrs
-    currX = [currX;currx];
-    currY = [currY;curry];
-    currZ = [currZ;currz];
+    curra = [curra;currX];
+    currb = [currb;currY];
+    currc = [currc;currZ];
 
     % Fourth Leg
-    [ currx, curry, currz] = ballfwd(wHb,corners(1,:)',TW,dt,speed,ballsize);
+    [ currX, currY, currZ] = ballfwd(wHb,corners(1,:)',TW,dt,speed,ballsize);
     % Set Required Current Vecotrs
-    currX = [currX;currx];
-    currY = [currY;curry];
-    currZ = [currZ;currz];
+    curra = [curra;currX];
+    currb = [currb;currY];
+    currc = [currc;currZ];
 else
     print('ERROR = Not Enough Input Arguments')
 end

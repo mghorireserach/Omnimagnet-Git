@@ -30,8 +30,8 @@ Task = 'Running Find Required Current';
 % Enough Inputs EXCEPTION
 if nargin == 1
     % Column of Homogeneous
-        xcol= 0;
-        ycol= 4;
+        %xcol= 0;
+        %ycol= 4;
         zcol= 8;
         pcol= 12; 
     % ----------------------
@@ -47,8 +47,8 @@ if nargin == 1
     p_hat = pos/norm(pos);
     % Constant of Permeability
     mu = 4*(10^-7)*pi;
-    % Eqn parts for B => I
-    I = (2*pi*(norm(pos)^3)*M\(3*p_hat*(p_hat') - 2*eye(3))/mu)*B;
+    % Eqn parts for B => I     I = (2pi/mu)*(||P||^3)(M^-1)(3*p^*p^T-2I)*B
+    I = (2*pi/mu)*(norm(pos)^3)*(M\(3*p_hat*(p_hat') - 2*eye(3)))*B;
 
     %% Output 
     currx = I(1);

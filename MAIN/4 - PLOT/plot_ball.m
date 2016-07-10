@@ -131,7 +131,6 @@ cylshift = q/2;
 else
     %% Draw Sphere
     % Apply transformation
-    H
     set(s,'Matrix',H);
     set(cyl,'Matrix',[H(1:3,1:3),[0 0 cylshift]';0 0 0 1]);
     % Show in Figure

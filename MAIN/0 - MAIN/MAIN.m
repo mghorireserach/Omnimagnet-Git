@@ -49,13 +49,15 @@ format compact
 %% MAIN
 % Enough Inputs EXCEPTION
 if nargin == 0||nargin == 1||nargin == 6||nargin == 8||nargin == 10
+    %% Close old Figure & Clean Old Data
     prompt = 'Close Old Figure?\n 1-Yes or 0-No\n';
     Q = input(prompt);
     if Q==1
     % Close Previous figures 
     close all;
     end
-    %% Add Paths 
+
+    %% Add Paths
     % MATLAB add path function
     addpath(genpath('C:\Users\alighori\Documents\2) MENU\1) OCCUPATION\JOBS\JOB(05.26.2016) - RA (Dr. Aaron Becker)\Test Project (Omni-Magnet & Magnet Ball)\MATLAB CODE\Omnimagnet_GIT\Omnimagnet-Git\MAIN'))
     %addpath('MATH-ROT','MATH-QUAT','MATH-THETA','MATH-HOM','CNTRL','PLOT','SHAPES','MAIN');
@@ -91,9 +93,9 @@ if nargin == 0||nargin == 1||nargin == 6||nargin == 8||nargin == 10
     if nargin == 1
         if type==1
             % run rectangle trajectory
-            [curra, currb, currc,wHb] = rollBallInSquare();
+            [curra, currb, currc,wHb] = rollBallInSquare()
             % playback trajectory
-            prompt = 'Run playback?\n 1-Yes or 0-No\n Then Press Enter';
+            prompt = 'Run playback?\n 1-Yes or 0-No\n Then Press Enter\n';
             prompt = input(prompt)==1;
             if prompt ==1
                 playback(curra,currb,currc,wHb);
@@ -183,18 +185,18 @@ filename = 'currentdata.xlsx';
 % write curra (inner solenoid)
 xlswrite(filename,curra,'currx','A1');
 % write currb (middle solenoid)
-xlswrite(filename,currb,'curry','A1');
+xlswrite(filename,currb,'currx','B1');
 % write currc (Outer solenoid)
-xlswrite(filename,currc,'currz','A1');
+xlswrite(filename,currc,'currx','C1');
 end 
 % delete window
 Q = 0;
 while Q == 0
     prompt = 'Close this Figure?\n 1-Yes or 0-No\n';
 Q = input(prompt);
-close all;
 end
 % Cleaning Data 
+close all;
 clear;
 clc;
 else

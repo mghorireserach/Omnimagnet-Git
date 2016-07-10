@@ -63,7 +63,7 @@ if nargin == 8 ||nargin == 3 ||nargin == 4 ||nargin == 6
         % size of tool
         ballsize = 1;
     end
-    wHb = [NaN 0 0 5;0 0 0 5;0 0 0 0;0 0 0 1];
+    wHb = [1 0 0 5;0 1 0 5;0 0 1 0;0 0 0 1];
     % Number of recorded positions
     arraysize = size(currx);
     

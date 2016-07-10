@@ -25,10 +25,10 @@ Task = 'Running Show Magnetic Field';
 % Enough Inputs EXCEPTION
 if nargin == 4
     % Step size between quivers
-    delp = 10; 
+    delp = norm(p0)/10; 
     % Initialize posB (Position of Quiver)
     posB(1,:) = p0;
-    direction = zeros(1000,3);
+    direction =[];
     % Draw 200 quivers to outline magnetic field lines
     for n = 0:1000
         % Magnetic Field Value at position
@@ -42,9 +42,10 @@ if nargin == 4
         posB(n+2,:) = direction(n+1,:)'*delp+posB(n+1,:)';
     end
     % Draw arrow tangent to magnetic field line
+    10*direction;
     size(direction)
     size(posB)
-        quiv = quiver3(posB(1:1001,1),posB(1:1001,2),posB(1:1001,3),direction(:,1),direction(:,2),direction(:,3));
+        quiv = quiver3(posB(1:1001,1),posB(1:1001,2),posB(1:1001,3),direction(1:1001,1),direction(1:1001,2),direction(1:1001,3));
         hold on
         pause(0.2)
         delete(quiv);

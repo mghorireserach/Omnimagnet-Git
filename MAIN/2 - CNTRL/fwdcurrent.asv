@@ -46,25 +46,24 @@ if nargin == 7
         % Rotation about world-z-axis
         psi = psi2-psi1;
         % Rotation about world-y-axis (negativd phi2 due to backward rotation)
-        phi = phi2-phi1;
+        phi =phi2-phi1;
         % phi sign correction
-        if phi <0
-            phi = phi + 2*pi;
-        end
         % psi sign correction
-        if psi<0 
-            psi = psi+2*pi;
-        end
-    % If there is no change in orientation
+        
+        % If there is no change in orientation
     if phi==0 && psi == 0
+    else
+    if phi==pi && psi ==pi
+        u
     else
         %% Single Angle Rotation
         % Current Rotation Matrix
         R = rotz(psi)*roty(phi);
         % Trace of current rotation matrix from magent-field to world
-        tau = trace(R);
+        tau =   trace(R);
         % Unit vector of axis of rotation
         u_hat = (1/sqrt((1+tau)*(3-tau)))*[R(6)-R(8);R(7)-R(3);R(2)-R(4)];
+        
         % angle of rotatoin
         th = acos((tau-1)/2);
         % average agular velocity 
@@ -74,42 +73,47 @@ if nargin == 7
         % set current position
         step = wHb(pcol+1:15)';
         % direction of linear movemnt
-        direction = [u_hat(1:2);0]
+        direction = [u_hat(1:2);0];
         direcangle = atan2(direction(1),direction(2));
-        theta = pi/2-direcangle
+        theta = pi/2-direcangle;
         % vector to skew symmetric matrix
         u_skew = vect2skew(u_hat);
         % Use rodruigez formula to rotate about singular axis
         Rot = (eye(3)*cos(omega*dt)+u_hat*u_hat'*(1-cos(omega*dt))+u_skew*sin(omega*dt));
+    
+        %{
         % Set Current Homogeneous Matrix
-        Hcurr = wHb;  
+        if isnan(wHb(1))
+            R1= rotz(psi1)*rotx(phi1);
+            Hcurr = [R1,wHb(pcol+1:15)'; 0 0 0 1];
+        else
+            Hcurr = wHb;  
+        end
+        %}
+        % Set Hcurr to start at init orientation and position
+        Hcurr = wHb;
         % linear velocity
         vel = omega*ballsize*[cos(theta);sin(theta);0];
-        
-        %% debugging 
-        if isnan(direction(1))
-            pause();
-        end
-        %%
-        
+
         for n = 1:reps
             % step forward
             step = step + vel*dt;
             Hcurr(pcol+1:15) = step;
-            Hcurr(1:3,1:3) = Hcurr(1:3,1:3)*Rot;
+            Hcurr(1:3,1:3) = Rot*Hcurr(1:3,1:3);
             % vsiualization
-            plot_ball(ballsize,Hcurr,dt,speed)
+            plot_ball(ballsize,Hcurr,0.001,speed);
             % Magnetic Field Visualization
-            showmagfield(I0(1),I0(2),I0(3),wHb(pcol+1:15)');
-            
+            %showmagfield(If(1),If(2),If(3),wHb(pcol+1:15)');
+            quiver3(Hcurr(pcol+1),Hcurr(pcol+2),Hcurr(pcol+3),4*cos(theta),4*sin(theta),0)
         end
             % Resultant Orientation
             Rot = (eye(3)*cos(th)+u_hat*u_hat'*(1-cos(th))+u_skew*sin(th));
             % Resultant Pos
             wHb(pcol+1:15) = wHb(pcol+1:15)' + vel*T;
-            wHb(1:3,1:3) = wHb(1:3,1:3)*Rot;
+            wHb(1:3,1:3) = Rot*wHb(1:3,1:3);
             % visualization
-            plot_ball(ballsize,wHb,dt,speed)
+            plot_ball(ballsize,wHb,0.001,speed);
+    
     end
     
 else

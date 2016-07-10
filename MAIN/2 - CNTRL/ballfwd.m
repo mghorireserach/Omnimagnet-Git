@@ -37,7 +37,7 @@ if nargin == 6
         pcol= 12; 
     % ----------------------
     
-    %% Initiate Current
+    %% Initiate Current    
     % Decompose wRb into phi & psi components
     %[phi, psi] = findPhiPsi(wHb);
     % Finding required current for phi and psi orientation
@@ -69,8 +69,12 @@ if nargin == 6
         for n = 1 : rotsteps
             % Rotation
             Rrot = rotz(omegaz*dt);
+%             Hr = [Rrot,[0;0;0];0 0 0 1];
+%             Rp = [eye(3),Hrot(pcol+1:15)';0 0 0 1];
+%             Rpm = [eye(3),-Hrot(pcol+1:15)';0 0 0 1]
             % Convert Rrot to Homegeneous Matrix
             Hrot(1:3,1:3) = Rrot*Hrot(1:3,1:3);%[Rrot',[0;0;0];0 0 0 1];
+            %Hrot = Rpm* Hrot*Hr*Rp;
             % Visualization Function of ball after Rotation
             plot_ball(ballsize,Hrot,dt,speed);
             % Find the Neccessary Current and add it to current set 
@@ -88,7 +92,7 @@ if nargin == 6
         % Pre multiply rotation for fixed frame
         wHb(1:3,1:3) = rotz(theta)*wHb(1:3,1:3);%[rotz(theta)',[0;0;0];0 0 0 1];
         % Visualization Function of ball after Rotation 
-        plot_ball(ballsize,wHb,0,speed);
+        plot_ball(ballsize,wHb,0.1,speed);
         % Find the Neccessary Current and add it to current set 
             % Decompose wRb into phi & psi components    
             %[phi, psi] = findPhiPsi(wHb);
@@ -111,6 +115,9 @@ if nargin == 6
         vel = omegay*ballsize;
         % Rotation matrix for visualization
         Htrans = wHb; 
+        % size of current vectors
+        cursize = size(currX);
+                
         for n = 1 : transteps
             % Transformation
             %  Rotation
@@ -124,13 +131,10 @@ if nargin == 6
                 %[phi, psi] = findPhiPsi(Htrans);
                 % Finding required current for phi and psi orientation of
                 % magnet-field
-                % size of current vectors
-                cursize = size(currX);
-                
                 [currx, curry, currz] = inverseMagneticField(Htrans);
-                currX(cursize+n,1) = currx;
-                currY(cursize+n,1) = curry;
-                currZ(cursize+n,1) = currz;
+                currX(cursize(1)+n,1) = currx;
+                currY(cursize(1)+n,1) = curry;
+                currZ(cursize(1)+n,1) = currz;
         end
 
         % Pre multiply rotation for fixed frame
@@ -138,7 +142,7 @@ if nargin == 6
         %  Translation
         wHb(pcol+1:15) = p2;
         % Visualization Function of ball after Rotation 
-        plot_ball(ballsize,wHb,0,speed)
+        plot_ball(ballsize,wHb,0.1,speed)
         % Find the Neccessary Current and add it to current set 
             % Decompose wRb into phi & psi components    
             %[phi, psi] = findPhiPsi(wHb);
@@ -147,7 +151,7 @@ if nargin == 6
             [currx, curry, currz] = inverseMagneticField(wHb);
             currX = [currX;currx];
             currY = [currY;curry];
-            currZ = [currZ;currz];    
+            currZ = [currZ;currz];  
 else
     ERROR = 'Not Enough Input Arguments';
     display(ERROR);
