@@ -6,35 +6,40 @@
 % A. J. Petruska and J. J. Abbott, "Omnimagnet: An Omnidirectional Electromagnet for Controlled Dipole-Field Generation," IEEE Trans. Magnetics, 50(7):8400810(1-10), 2014. 
 % Link: http://www.telerobotics.utah.edu/index.php/Research/Omnimagnets
 
-function [ curra, currb, currc,wHb, Task ] = rollBallInSquare(wHb,corner,T,dt,speed,ballsize)
+function [ curra, currb, currc, wHb, Task ] = rollBallInRectangle(wHb,corner,T,dt,speed,ballsize)
 %Print Task Name
-Task = 'Running Roll Ball in Square';
+Task = 'Running Roll Ball in Rectangle';
 %---------------------
-% rollBallInSquare Returns the square path to follow
+% rollBallInRectangle rolls the ballmagnet in a rectangular path and 
+% returns the the required solenoid-current coresponding to each
+% orientation at each step in the path
 %
-%   [ currX, currY, currZ ] = rollBallInSquare() 
-%   "Returns a path of a square shape with a side length of 1"
+%   rollBallInRectangle() 
+%   "Returns a path of a rectangle shape"
 %   
-%   [ currX, currY, currZ ] = rollBallInSquare(x0,y0,phi,psi,corner) 
-%   "Returns a path of a rectangular shape with an init position and orientation 
-%    and far corner 'x0' 'y0' 'phi' 'psi' & 'corner' "
+%   rollBallInRectangle(wHb,corner) 
+%   "Returns a path of a rectangular shape with an init Homogeneous 
+%    transformation from the world frame to the ball frame of 'wHb'
+%    and a 3rd corner [x2,y2] 'corner' "
 %
-%   [ currX, currY, currZ ] = rollBallInSquare(x0,y0,phi,psi,corner,T,dt) 
-%   "Returns a path of a rectangular shape with an init position and orientation 
-%    and far corner 'x0' 'y0' 'phi' 'psi' & 'corner' "
-%    with Time to completion and timestep 'T' & 'dt' "
+%   rollBallInRectangle(wHb,corner,T,dt) 
+%   "Returns a path of a rectangular shape with an init Homogeneous 
+%    transformation from the world frame to the ball frame of 'wHb'
+%    and a 3rd corner [x2,y2] 'corner'
+%    with a period to complete path and timestep 'T' & 'dt' "
 %
-%   [ currX, currY, currZ ] = rollBallInSquare(x0,y0,phi,psi,corner,T,dt,speed,ballsize) 
-%   "Returns a path of a rectangular shape with an init position and orientation 
-%    and far corner 'x0' 'y0' 'phi' 'psi' & 'corner' "
-%    with Time to completion and timestep 'T' & 'dt' 
-%    with ball-size and video speed 'ballsize' 'speed'"
+%   rollBallInRectangle(wHb, corner,T,dt,speed,ballsize) 
+%   "Returns a path of a rectangular shape with an init Homogeneous 
+%    transformation from the world frame to the ball frame of 'wHb'
+%    and a 3rd corner [x2,y2] 'corner'
+%    with a period to complete path and timestep 'T' & 'dt'
+%    with ball-size and video speed as 'ballsize' 'speed'"
 %
 % EX___  
-%   [ currX, currY, currZ ] = rollBallInSquare(0,0,pi,pi,[10;10],10,0.1,1,1);
+%   [ currX, currY, currZ ] = rollBallInRectangle([1 0 0 0; 0 1 0 0; 0 0 1 0; 0 0 0 1],[10;10],10,0.1,1,1);
 %
 
-%% rollBallInSquare
+%% rollBallInRectangle
 % Enough Inputs EXCEPTION
 if nargin == 0||nargin == 5||nargin == 7||nargin == 9
     % Default Params____ 
@@ -56,18 +61,18 @@ if nargin == 0||nargin == 5||nargin == 7||nargin == 9
         % Init Homgeneous 
         wHb = [R0,p0;0 0 0 1];
         % 3rd Corner of the rectangular trajectory 
-        corner = [10;10];
+        corner = [-5;-5];
         % Time to completion of trajectory
         T = 10;
         % time step at which to reccord
         dt = 0.1;
         % speed of video
-        speed = 50;
+        speed = 0.5;
         % tool size
         ballsize = 1;
     end
 
-    %% 2 Params "Square Dimensions Only Given"
+    %% 2 Params "Rectangle Dimensions Only Given"
     if nargin == 2
         %  Time  t completion of trajectory
         T = 10;
@@ -94,13 +99,13 @@ if nargin == 0||nargin == 5||nargin == 7||nargin == 9
         pcol= 12; 
     % ----------------------
     
-    %% rollBallInSquare
+    %% rollBallInRectangle
     %  --------
     % |        |  W
     % |        |
     %  --------
     %     L
-    % Length and Width of the "Square"
+    % Length and Width of the "Rectangle"
     L = abs(wHb(pcol+1)-corner(1));
     W = abs(wHb(pcol+2)-corner(2));
 
@@ -121,7 +126,7 @@ if nargin == 0||nargin == 5||nargin == 7||nargin == 9
     corners = [wHb(pcol+1) wHb(pcol+2) 0; corner(1) wHb(pcol+2) 0;corner(1) corner(2) 0; wHb(pcol+1) corner(2) 0];
 
 
-    %% Rolling Ball in Square
+    %% Rolling Ball in Rectangle
 
     % First Leg
     % Use ballfwd Control

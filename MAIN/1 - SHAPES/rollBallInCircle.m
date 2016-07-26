@@ -10,25 +10,30 @@ function [ currX, currY, currZ ,Task] = rollBallInCircle(wHb,radius,T,dt,speed,b
 %Print Task Name
 Task = 'Running Roll Ball in Circle';
 %---------------------
-% rollBallInCircle Returns the Circle path to follow
+% rollBallInCircle Returns rolls the ballmagnet in a cirucular path and 
+% returns the the required solenoid-current coresponding to each
+% orientation at each step in the path
 %
 %   rollBallInCircle() 
-%   "Returns a path of a Circle shape with a radius length of 1"
+%   "Returns a path of a Circle shape"
 %   
-%   rollBallInCircle(x0,y0,phi,psi,radius) 
-%   "Returns a path of a Circular shape with an init position and orientation 
-%    and far radius 'x0' 'y0' 'phi' 'psi' & 'radius' "
+%   rollBallInCircle(wHb,radius) 
+%   "Returns a path of a rectangular shape with an init Homogeneous
+%    from the world frame to the ball frame of 'wHb' and with a specific 
+%    'radius' "
 %
-%   rollBallInCircle(x0,y0,phi,psi,radius,T,dt) 
-%   "Returns a path of a Circular shape with an init position and orientation 
-%    and far radius 'x0' 'y0' 'phi' 'psi' & 'radius' "
-%    with Time to completion and timestep 'T' & 'dt' "
+%   rollBallInCircle(wHb,radius,T,dt) 
+%   "Returns a path of a rectangular shape with an init Homogeneous
+%    from the world frame to the ball frame of 'wHb' and with a specific 
+%    'radius'
+%    with a period to complete path and timestep 'T' & 'dt'
 %
-%   [ currX, currY, currZ ] = rollBallInCircle(x0,y0,phi,psi,radius,T,dt,speed,ballsize) 
-%   "Returns a path of a Circular shape with an init position and orientation 
-%    and far radius 'x0' 'y0' 'phi' 'psi' & 'radius' "
-%    with Time to completion and timestep 'T' & 'dt' 
-%    with ball-size and video speed 'ballsize' 'speed'"
+%   rollBallInCircle(wHb,radius,T,dt,speed,ballsize) 
+%   "Returns a path of a rectangular shape with an init Homogeneous
+%    from the world frame to the ball frame of 'wHb' and with a specific 
+%    'radius'
+%    with a period to complete path and timestep 'T' & 'dt'
+%    with ball-size and video speed as 'ballsize' 'speed'"
 %
 % EX___  
 %   [ currX, currY, currZ ] = rollBallInCircle(0,0,pi,pi,1,10,0.1,1,1);
@@ -83,7 +88,8 @@ if nargin == 0||nargin == 5||nargin == 7||nargin == 9
         % tool size
         ballsize = 1;
     end
-    % Column of Homogeneous
+    
+    % Column of Homogeneous Matrix
         %xcol= 0;
         %ycol= 4;
         %zcol= 8;
@@ -110,15 +116,14 @@ if nargin == 0||nargin == 5||nargin == 7||nargin == 9
             dt = dt/4;
             % Use ballfwd Control
             [ currx, curry, currz, wHb] = ballfwd(wHb,pos2,T,dt,speed,ballsize);
-            % Set Required Current Vecotrs 
+            % Set Solenoid Current Vecotrs 
             currX = [currX;currx];
             currY = [currY;curry];
             currZ = [currZ;currz];
         end
     end
 else
-    ERROR = 'Not Enough Input Arguments';
-    display(ERROR);
+    display('ERROR:Not Enough Input Arguments');
 end
 end
 

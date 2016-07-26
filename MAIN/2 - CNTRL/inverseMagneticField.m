@@ -43,7 +43,7 @@ if nargin == 1
     pos = H(pcol+1:15)';
     B = H(zcol+1:zcol+3)';
     %% Eqn B => I
-    % Unit Vecotr for pos
+    % Unit Vector for pos
     p_hat = pos/norm(pos);
     % Constant of Permeability
     mu = 4*(10^-7)*pi;

@@ -38,8 +38,6 @@ if nargin == 6
     % ----------------------
     
     %% Initiate Current    
-    % Decompose wRb into phi & psi components
-    %[phi, psi] = findPhiPsi(wHb);
     % Finding required current for phi and psi orientation
     [currx, curry, currz] = inverseMagneticField(wHb);
     currX = currx;
@@ -52,7 +50,7 @@ if nargin == 6
     % unit vector of Magnetic-Field y-axis in world x-y-plane
     yaxis = wHb(ycol+1:ycol+3)';
     % Angle Between Magnetic-Field y-axis and vector pointing to next position
-    theta = (pi/2 - anglediff(direction,yaxis));
+    theta = (pi/2 +anglediff(direction,yaxis));
     % For no rotation needed EXCEPTION
     if isnan(direction)
         theta = 0;
@@ -69,18 +67,11 @@ if nargin == 6
         for n = 1 : rotsteps
             % Rotation
             Rrot = rotz(omegaz*dt);
-%             Hr = [Rrot,[0;0;0];0 0 0 1];
-%             Rp = [eye(3),Hrot(pcol+1:15)';0 0 0 1];
-%             Rpm = [eye(3),-Hrot(pcol+1:15)';0 0 0 1]
             % Convert Rrot to Homegeneous Matrix
-            Hrot(1:3,1:3) = Rrot*Hrot(1:3,1:3);%[Rrot',[0;0;0];0 0 0 1];
-            %Hrot = Rpm* Hrot*Hr*Rp;
+            Hrot(1:3,1:3) = Rrot*Hrot(1:3,1:3);
             % Visualization Function of ball after Rotation
             plot_ball(ballsize,Hrot,dt,speed);
             % Find the Neccessary Current and add it to current set 
-                % Decompose wRb into phi & psi components    
-                %[phi, psi] = findPhiPsi(Hrot);
-                % Finding required current for phi and psi orientation of
                 % magnet-field
                 [currx, curry, currz] = inverseMagneticField(Hrot);
                 currX(n+1,1) = currx;
@@ -94,14 +85,12 @@ if nargin == 6
         % Visualization Function of ball after Rotation 
         plot_ball(ballsize,wHb,0.1,speed);
         % Find the Neccessary Current and add it to current set 
-            % Decompose wRb into phi & psi components    
-            %[phi, psi] = findPhiPsi(wHb);
-            % Finding required current for phi and psi orientation of
             % magnet-field
             [currx, curry, currz] = inverseMagneticField(wHb);
             currX = [currX;currx];
             currY = [currY;curry];
             currZ = [currZ;currz];
+    
     %% Translation
     % Rotation required to reach p2 with no slip condition
     gama = norm(p2-wHb(pcol+1:15)')/(ballsize);
@@ -117,9 +106,8 @@ if nargin == 6
         Htrans = wHb; 
         % size of current vectors
         cursize = size(currX);
-                
+        % Transformation        
         for n = 1 : transteps
-            % Transformation
             %  Rotation
             Htrans = Htrans*[roty(omegay*dt),[0;0;0];0 0 0 1];
             %  Translation
@@ -127,9 +115,6 @@ if nargin == 6
             % Visualization Function of ball after Rotation
             plot_ball(ballsize,Htrans,dt,speed);
             % Find the Neccessary Current and add it to current set 
-                % Decompose wRb into phi & psi components    
-                %[phi, psi] = findPhiPsi(Htrans);
-                % Finding required current for phi and psi orientation of
                 % magnet-field
                 [currx, curry, currz] = inverseMagneticField(Htrans);
                 currX(cursize(1)+n,1) = currx;
@@ -144,17 +129,13 @@ if nargin == 6
         % Visualization Function of ball after Rotation 
         plot_ball(ballsize,wHb,0.1,speed)
         % Find the Neccessary Current and add it to current set 
-            % Decompose wRb into phi & psi components    
-            %[phi, psi] = findPhiPsi(wHb);
-            % Finding required current for phi and psi orientation of
             % magnet-field
             [currx, curry, currz] = inverseMagneticField(wHb);
             currX = [currX;currx];
             currY = [currY;curry];
             currZ = [currZ;currz];  
 else
-    ERROR = 'Not Enough Input Arguments';
-    display(ERROR);
+    display('ERROR: Not Enough Input Arguments');
 end
 end
 

@@ -18,17 +18,25 @@ function [Task] = plot_ball(ballsize,H,dt,speed)
 Task = 'Running Plot Magnet Ball';
 %---------------------
 format compact
-persistent cylshift s cyl
+persistent cylshift s cyl vis frame
+global mov
+% Init Move Frame Vector
+    frame = 1;
 % Column of Homogeneous
         %xcol= 0;
         %ycol= 4;
-        %zcol= 8;
+        zcol= 8;
         pcol= 12; 
     % ----------------------
     
 %% Draw Sphere
-if nargin ==1    
+
+if nargin == 0
+delete(s);
+else
 %% Creating Figure
+if nargin ==1    
+vis = figure;
     % Enforce that one unit is displayed 
     % equivalently in x, y, and z.
     axis equal;
@@ -36,9 +44,9 @@ if nargin ==1
     % height : ensures ample height to see whole picture
     height = ballsize*3;
     % -x x -y y -z z step
-    axis([-20 20 -20 20 -height 5])
+    axis([-10 12 -10 12 0 20])
     % Set the viewing angle
-    view(-135, 40)
+    view(-135, 20)
     % Label the axes.
     xlabel('x0 (m)')
     ylabel('y0 (m)')
@@ -89,7 +97,7 @@ cylshift = q/2;
     
     [Cx,Cy,Cz] = cylinder(1);
     Cz = 2*Cz-1;
-    %MAT = [Cx; Cy; Cz]; 
+    % Model Skins; 
     I = imread('capture.png');
     %P = imread('poke.png');
     Cil(3) = warp(Cx,Cy,-Cz,I);
@@ -130,23 +138,32 @@ cylshift = q/2;
     
 else
     %% Draw Sphere
-    % Apply transformation
+    % Apply transformation to cylindrical Bar Magnet
+    set(cyl,'Matrix',[H(1:3,1:3),[0 0 cylshift]';0 0 0 1]); 
+    % Move ball up such that it is rolling on a surface at z = 0
+    H(15)=H(15)+ballsize
+    % Apply transformation to magnetic ball
     set(s,'Matrix',H);
-    set(cyl,'Matrix',[H(1:3,1:3),[0 0 cylshift]';0 0 0 1]);
+    
+    % Draw Magnetic Field at every orientation
+    %quiver3(H(pcol+1),H(pcol+2),H(pcol+3),2*H(zcol+1), 2*H(zcol+2),2*H(zcol+3));
+    
     % Show in Figure
     drawnow
-    
+    %mov(frame) = getframe; 
+    %frame = frame+1;
+    %movie(mov);
+     
     %% sets time delay "causes warning in first run"
     pause(dt/speed);
     
     
     %% makes prvious ball invisible & Marks Position
-    %delete(h);
-    %delete(s);
     pos = H(pcol+1:15)';
     % Draws a red dot to denote poition already visited
     scatter3(pos(1),pos(2),0,'.','red')
 
-end   
+end
+end
 end
 

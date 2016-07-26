@@ -39,7 +39,7 @@ if nargin == 5
     
     % Unit Vecotr for pos
     if norm(pos)==0
-    u  = [0;0;0];
+    p_hat  = [0;0;0];
     else
     p_hat = pos/norm(pos);
     % Constant of Permeability
@@ -53,12 +53,12 @@ if nargin == 5
     end
     %% Output 
     % Angle from the world-x-axis to B in world-x-z-plane
-    phi = atan2(u(2),u(1));
-    if phi<0
+    phi = atan2(u(3),sqrt(u(2)^2+u(1)^2));
+    if phi<0 
         phi = phi+2*pi;
     end
     % Angle from world-x-axis to B in world-x-y-plane
-    psi = atan2(u(3),sqrt(u(2)^2+u(1)^2));
+    psi = atan2(u(2),u(1));
     if psi<0
         psi = psi +2*pi;
     end

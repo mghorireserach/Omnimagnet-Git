@@ -31,7 +31,7 @@ Task = 'Running Current to Step';
 % Column of Homogeneous
         %xcol= 0;
         %ycol= 4;
-        %zcol= 8;
+        zcol= 8;
         pcol= 12; 
     % ----------------------
     
@@ -46,76 +46,86 @@ if nargin == 7
         % Rotation about world-z-axis
         psi = psi2-psi1;
         % Rotation about world-y-axis (negativd phi2 due to backward rotation)
-        phi =phi2-phi1;
-        % phi sign correction
-        % psi sign correction
-        
-        %% Single Angle Rotation
-        % If there is no change in orientation
-    if phi==0 && psi == 0
-    else
-        %If phi and psi are pi there is a chance for error
-    if phi==pi && psi ==pi
-        % set unit vector to x-axis
-        u_hat = [1;0;0];
-        % set total rotation to be pi
-        th = pi;
-    else
-        
+        phi = phi2-phi1;
+    % No rotation occurs
+    if phi==0 && psi ==0
+    else    
         % Current Rotation Matrix
-        R = rotz(psi)*roty(phi);
-        % Trace of current rotation matrix from magent-field to world
-        tau =   trace(R);
-        % Unit vector of axis of rotation
-        u_hat = (1/sqrt((1+tau)*(3-tau)))*[R(6)-R(8);R(7)-R(3);R(2)-R(4)];
+        R = [((cos(psi)^2)+cos(phi)*(sin(psi)^2))  ((1-cos(phi))*cos(psi)*sin(psi))   (sin(phi)*sin(psi));...
+             ((1-cos(phi))*cos(psi)*sin(psi))      (cos(phi)*(cos(psi)^2)+sin(psi)^2) (-cos(psi)*sin(phi));...
+              (-sin(phi)*sin(psi))                 (cos(psi)*sin(phi))                 cos(phi)];
+        %% Quaternion Version of Axis Angle
+        % Quaternion
+        Q = rot2quat(R);
+        % Angle of Rotation
+        th = 2*atan2(norm(Q(2:4)),Q(1));
+        % Define Axis
+        if th == 0
+            % scalar multiplier
+            u_hat = [0;0;0];
+        else
+            % scalar multiplier
+            u_hat = Q(2:4)/sin(th/2); 
+        end
         
-        % angle of rotatoin
-        th = acos((tau-1)/2);
-    end
+%         %% Single Angle Rotation    
+%         % Trace of current rotation matrix from magent-field to world
+%         tau =   trace(R);
+%         % angle of rotatoin
+%         th = acos((tau-1)/2);
+%         % Unit vector of axis of rotation
+%         u_hat = (0.5/sin(th))*[R(6)-R(8);R(7)-R(3);R(2)-R(4)];
+        
+        %% Decompose whole into velocities
         % average agular velocity 
         omega = th/T;
         % Number of steps to show in visual
         reps = floor(T/dt);
-        % set current position
-        step = wHb(pcol+1:15)';
-        % direction of linear movemnt
-        direction = [u_hat(1:2);0];
-        direcangle = atan2(direction(1),direction(2));
-        theta = pi/2-direcangle;
-        % vector to skew symmetric matrix
-        u_skew = vect2skew(u_hat);
+        
+            % direction of linear movemnt
+            direction = u_hat-dot(u_hat,wHb(zcol+1:zcol+3))*wHb(zcol+1:zcol+3)';
+            % rolling rolling direction 
+            theta  = -atan2(direction(1),direction(2));
+        % linear velocity
+        vel = sqrt(norm(u_hat(1:2)))*omega*ballsize*[cos(theta);sin(theta);0]*2;
+        
+        % rotzroty method
+        %stuff = rotz(psi)*wHb(1:3,1:3);
+        %direcsion = (stuff(:,1)+stuff(:,3))/norm(stuff(:,1)+stuff(:,3));
+        
+            % u_hat to skew symetric matrix
+            u_skew = vect2skew(u_hat);
         % Use rodruigez formula to rotate about singular axis
         Rot = (eye(3)*cos(omega*dt)+u_hat*u_hat'*(1-cos(omega*dt))+u_skew*sin(omega*dt));
-    
-        % Set Hcurr to start at init orientation and position
-        Hcurr = wHb;
-        % linear velocity
-        vel = omega*ballsize*[cos(theta);sin(theta);0];
-
+        
+        %% Step through
+            % Set Hcurr to start at init orientation and position
+            Hcurr = wHb;
         for n = 1:reps
             % step forward
-            step = step + vel*dt;
-            Hcurr(pcol+1:15) = step;
+            Hcurr(pcol+1:15) = Hcurr(pcol+1:15)'+ vel*dt;
+            % Roll
             Hcurr(1:3,1:3) = Rot*Hcurr(1:3,1:3);
-            % vsiualization
+            
+            %% vsiualization of steps
+            % Plot ball in intermediate orientation and position
             plot_ball(ballsize,Hcurr,0.001,speed);
             % Magnetic Field Visualization
             %showmagfield(If(1),If(2),If(3),wHb(pcol+1:15)');
-            quiver3(Hcurr(pcol+1),Hcurr(pcol+2),Hcurr(pcol+3),4*cos(theta),4*sin(theta),0)
+            %quiver3(Hcurr(pcol+1),Hcurr(pcol+2),Hcurr(pcol+3),4*cos(theta),4*sin(theta),0)
         end
+        %% whole Move
             % Resultant Orientation
             Rot = (eye(3)*cos(th)+u_hat*u_hat'*(1-cos(th))+u_skew*sin(th));
-            % Resultant Pos
+            % Resultant Pos & Orientation
             wHb(pcol+1:15) = wHb(pcol+1:15)' + vel*T;
+            %wHb(1:3,1:3) = rotz(psi2)*roty(phi2);
             wHb(1:3,1:3) = Rot*wHb(1:3,1:3);
-            % visualization
+    end      
+            %% vsiualization
             plot_ball(ballsize,wHb,0.001,speed);
     
-    end
-    
 else
-    ERROR = 'Not Enough Input Arguments';
-    display(ERROR);
-end
+    display('ERROR: Not Enough Input Arguments');
 end
 
