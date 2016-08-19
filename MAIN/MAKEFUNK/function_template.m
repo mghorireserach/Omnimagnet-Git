@@ -10,22 +10,28 @@ function [ output_args, Task ] = Untitled2( input_args )
 %Print Task Name
 Task = 'WHAT TASK IS RUNNING';
 %---------------------
-% INSTRUCTIONS
-%{
-% PUT INFO ON HOW TO USE FUNCTION
-%}
+% Desccription of Function
+%   Untitled2(input_args)
+%   Description of this set of 'input_argss'
+%
+% EX__
+%  [outputargs,Task] = Untitled2(1) 
+%   
+% Compact Text Format
+format compact
 
+%% Untitled2
 % Enough Inputs EXCEPTION
 if nargin == 0
-%% SECTION 1
+    %% SECTION 1
 
-% LINE COMMENT 
+    % LINE COMMENT 
 
-%% SECTION 2
-...
+    %% SECTION 2
+    ...
 
 else
-    ERROR = 'Not Enough Input Arguments'
+    display('ERROR: Not Enough Input Arguments');
 end
 end
 

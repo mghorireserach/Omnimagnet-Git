@@ -25,7 +25,9 @@ if theta2 <0
 end
 
 % Difference Angle between two vectors in the world x-y plane 
-theta = theta2-theta1;
-
+theta = theta1 - theta2;
+%  if theta <0
+%      theta = theta + 2*pi;
+%  end
 end
 

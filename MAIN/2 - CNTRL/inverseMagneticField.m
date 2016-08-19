@@ -8,7 +8,7 @@
 % A. J. Petruska and J. J. Abbott, "Omnimagnet: An Omnidirectional Electromagnet for Controlled Dipole-Field Generation," IEEE Trans. Magnetics, 50(7):8400810(1-10), 2014. 
 % Link: http://www.telerobotics.utah.edu/index.php/Research/Omnimagnets
 
-function [ currx, curry, currz, Task ] = inverseMagneticField(x,y,phi,psi)
+function [ currx, curry, currz, Task ] = inverseMagneticField(H,H0)
 %Print Task Name
 Task = 'Running Find Required Current';
 %---------------------
@@ -28,31 +28,35 @@ Task = 'Running Find Required Current';
 
 %% inverseMagneticField 
 % Enough Inputs EXCEPTION
-if nargin == 4
+if nargin == 1
+    % Column of Homogeneous
+        %xcol= 0;
+        %ycol= 4;
+        zcol= 8;
+        pcol= 12; 
+    % ----------------------
+    
     % Mapping of Magnetic Field to Current Based on Physical 
     % Attributes of Solenoid
     M = eye(3);
     % position of the ball center
-    pos = [x,y,0];
-    % Magnitude of Field
-    a = 100;
-    % Magnetic Field with constant magnitude
-    R = rotz(psi)*roty(phi);
-    B = R(7:9)';
+    pos = H(pcol+1:15)';
+    B = H(zcol+1:zcol+3)';
     %% Eqn B => I
-    % Unit Vecotr for pos
+    % Unit Vector for pos
     p_hat = pos/norm(pos);
     % Constant of Permeability
     mu = 4*(10^-7)*pi;
-    % Eqn parts for B => I
-    I = (2*pi*(norm(pos)^3)*M\(3*p_hat*(p_hat') - 2*eye(3))/mu)*B;
+    % Eqn parts for B => I     I = (2pi/mu)*(||P||^3)(M^-1)(3*p^*p^T-2I)*B
+    I = (2*pi/mu)*(norm(pos)^3)*(M\(3*p_hat*(p_hat') - 2*eye(3)))*B;
 
     %% Output 
     currx = I(1);
     curry = I(2);
     currz = I(3);
 else
-    ERROR = 'Not Enough Input Arguments'
+    ERROR = 'Not Enough Input Arguments';
+    display(ERROR);
 end
 
 end

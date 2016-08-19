@@ -69,12 +69,12 @@ if nargin == 6
             
             % Find the Neccessary Current and add it to current set 
                 % magnet-field
-                [currx, curry, currz] = inverseMagneticField(Hrot,Hrot0);
+                [currx, curry, currz] = inverseMagneticField(Hrot);
                 currX(n+1,1) = currx;
                 currY(n+1,1) = curry;
                 currZ(n+1,1) = currz;
-            
-             Hrot0 = Hrot;
+            Hrot0 = Hrot;
+
         end
 
         % Pre multiply rotation for fixed frame
